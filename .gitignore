@@ -1,0 +1,6 @@
+*.pyc
+*.h
+
+# python temp paths
+__pycache__/
+*.pyc
