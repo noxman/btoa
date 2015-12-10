@@ -8,3 +8,5 @@ bin/*
 lib/*
 license/*
 python/*
+.projict
+.pydevproject

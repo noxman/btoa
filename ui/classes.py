@@ -26,6 +26,10 @@ FilterTypes = [("0","blackman_harris_filter","filter type"),
                 ("16","video_filter","filter type")]
 FilterDomain = [("0","first_hit","filter domain hit"),
                 ("1","all_hit","filter domain hit")]
+MotionblurPositon = [("0","start on frame","motion blur position"),
+                     ("1","center on frame","motion blur position"),
+                     ("2","end on frame","motion blur position"),
+                     ("3","custom","motion blur position")]
 class ArnoldPanel(bpy.types.Panel):
     COMPAT_ENGINES = {'arnold_renderer'}
     @classmethod

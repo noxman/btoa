@@ -3,10 +3,9 @@
 #
 import bpy
 from btoa.ui import classes
-from btoa.ui.classes import PanelGroups,FilterTypes,FilterDomain
+from btoa.ui.classes import PanelGroups,FilterTypes,FilterDomain,MotionblurPositon
 from bpy.props import *
 from bpy.types import PropertyGroup
-
 def initSceneProperties(scn):
  
     bpy.types.Scene.MyString = StringProperty(
@@ -113,7 +112,9 @@ class SceneSettingItem(bpy.types.PropertyGroup):
         min = 0, max = 1,
         precision = 2,
         step = 1,
-        description = "Enter an float",default = 0.99)  
+        description = "Enter an float",default = 0.99) 
+    ###------Environment------ 
+    
     ###------Motion blur------
     bpy.types.Scene.Motion_blur_enable = BoolProperty(
         name = "Enable", 
@@ -127,7 +128,75 @@ class SceneSettingItem(bpy.types.PropertyGroup):
     bpy.types.Scene.Motion_blur_keys = IntProperty(
         name = "Keys", 
         min = 2, max = 30,
-        description = "Enter an integer",default = 2)                                             
+        description = "Enter an integer",default = 2) 
+    bpy.types.Scene.Motion_blur_position = bpy.props.EnumProperty(items=MotionblurPositon, default = "1")                                           
+    bpy.types.Scene.Motion_blur_length = FloatProperty(
+        name = "",
+        min = 0, max = 1,
+        precision = 2,
+        step = 1,
+        description = "Enter an float",default = 0.5)
+    bpy.types.Scene.Motion_blur_start = FloatProperty(
+        name = "",
+        min = 0, max = 1,
+        precision = 2,
+        step = 1,
+        description = "Enter an float",default = -0.25) 
+    bpy.types.Scene.Motion_blur_end = FloatProperty(
+        name = "",
+        min = 0, max = 1,
+        precision = 2,
+        step = 1,
+        description = "Enter an float",default = 0.25) 
+    ###------Lights------
+    bpy.types.Scene.Main_lights = FloatProperty(
+        name = "",
+        min = 0, max = 0.1,
+        precision = 3,
+        step = 1,
+        description = "Enter an float",default = 0.001) 
+    ###------Textures------
+    bpy.types.Scene.Texture_accept_unmipped = BoolProperty(
+        name = "Accept unmipped", 
+        description = "True or False?",
+        default = True) 
+    bpy.types.Scene.Texture_auto_mipmap = BoolProperty(
+        name = "Auto-mipmap", 
+        description = "True or False?",
+        default = True) 
+    bpy.types.Scene.Texture_accept_untiled = BoolProperty(
+        name = "Accept untiled", 
+        description = "True or False?",
+        default = True) 
+    bpy.types.Scene.Texture_auto_tile = BoolProperty(
+        name = "Auto-tile", 
+        description = "True or False?",
+        default = True) 
+    bpy.types.Scene.Texture_tile_size = IntProperty(
+        name = "Tile size", 
+        min = 16, max = 64,
+        description = "Enter an integer", default = 64)       
+    bpy.types.Scene.Texture_use_existing = BoolProperty(
+        name = "Use existiong.tx textures", 
+        description = "True or False?",)
+    bpy.types.Scene.Texture_max_cache = FloatProperty(
+        name = "Max cache size(MB)",
+        precision = 2,
+        step = 1,
+        description = "Enter an float", default = 1024) 
+    bpy.types.Scene.Texture_max_open = IntProperty(
+        name = "Max open files", 
+        description = "Enter an integer", default = 0)
+    bpy.types.Scene.Texture_diffuse_blur = FloatProperty(
+        name = "Diffuse blur",
+        precision = 3,
+        step = 1,
+        description = "Enter an float", default = 0.031)
+    bpy.types.Scene.Texture_glossy_blur = FloatProperty(
+        name = "Glossy blur",
+        precision = 2,
+        step = 1,
+        description = "Enter an float", default = 0) 
 class ARNOLD_RP_render(classes.ArnoldRenderPanel):
     bl_label = ""
     bl_options = {'HIDE_HEADER'}
@@ -188,13 +257,10 @@ class ARNOLD_main_sampling(classes.ArnoldRenderPanel):
         row.prop(scn, 'Use_autobump_in_sss')
         row = layout.row()
         row.prop(scn, 'Clamp_sample')
-        row = layout.row()
-        box = row.box()
-        box.enabled = False
         if scn.Clamp_sample ==True:
-            box.enabled = True
-        box.prop(scn, 'Affect_aovs')  
-        box.prop(scn, 'Clamp_max', text = "Max value")   
+            row = layout.row()
+            row.prop(scn, 'Affect_aovs')  
+            row.prop(scn, 'Clamp_max', text = "Max value")   
         row = layout.row()
         row.prop(scn,'Filter_Types', text = "Default filter.type")
         row = layout.row()
@@ -202,20 +268,22 @@ class ARNOLD_main_sampling(classes.ArnoldRenderPanel):
         sub_filter = ['0','5','6','8','10','13','14']
         for choice in sub_filter:
             if scn.Filter_Types == choice:
-                box = row.box()
-                box.prop(scn, 'Filter_width', text = "Default filter.width") 
+                row = layout.row()
+                #box = row.box()
+                row.prop(scn, 'Filter_width', text = "Default filter.width") 
         if scn.Filter_Types == '9':
-            box = row.box()
-            box.prop(scn, 'Filter_Domain')
+            row = layout.row()
+            row.prop(scn, 'Filter_Domain')
         elif scn.Filter_Types == '11':
-            box = row.box()
-            box.prop(scn, 'Filter_minimum', text = "Default filter.minimum")
-            box.prop(scn, 'Filter_minimum', text = "Default filter.maximum")
+            row = layout.row()
+            row.prop(scn, 'Filter_minimum', text = "Default filter.minimum")
+            row.prop(scn, 'Filter_minimum', text = "Default filter.maximum")
         elif scn.Filter_Types == '15':
-            box = row.box()
-            box.prop(scn, 'Filter_width', text = "Default filter.width") 
-            box.prop(scn, 'Filter_scalar_mode')  
-                           
+            row = layout.row()
+            row.prop(scn, 'Filter_width', text = "Default filter.width") 
+            row = layout.row()
+            row.prop(scn, 'Motion_blur_position', text = "Positon")  
+       
 class ARNOLD_main_Ray_depth(classes.ArnoldRenderPanel):
     bl_label = "Ray depth"
     bl_options = {'DEFAULT_CLOSED'}
@@ -259,7 +327,10 @@ class ARNOLD_main_Environment(classes.ArnoldRenderPanel):
         layout = self.layout 
         scn = context.scene
         row = layout.row()
-        row.prop(scn, 'Ray_depth_total',text = "Total")
+        row.prop(scn, 'background_set', text = "Background")
+        row = layout.row()
+        row.label('Atmosphere')
+        row.prop(scn, 'Ray_depth_total')
 class ARNOLD_main_Motion_blur(classes.ArnoldRenderPanel):
     bl_label = "Motion blur"
     bl_options = {'DEFAULT_CLOSED'}
@@ -275,15 +346,82 @@ class ARNOLD_main_Motion_blur(classes.ArnoldRenderPanel):
         scn = context.scene
         row = layout.row()
         row.prop(scn, 'Motion_blur_enable')
-        row = layout.row()
-        box = row.box()
-        box.enabled = False
+        col = layout.column()
+        col.enabled = False
         if scn.Motion_blur_enable == True:
-            box.enabled = True 
-        box.prop(scn, 'Motion_blur_deformation')  
-        box.prop(scn, 'Motion_blur_camera') 
-        box.prop(scn, 'Motion_blur_keys') 
-                        
+            col.enabled = True
+        row = col.row()    
+        row.prop(scn, 'Motion_blur_deformation') 
+        row.prop(scn, 'Motion_blur_camera') 
+        row = col.row()
+        row.prop(scn, 'Motion_blur_keys')
+        row = col.row()
+        row.label('Shutter angle 180.00') 
+        row = col.row()
+        row.prop(scn, 'Motion_blur_position', text = "Posiotn")
+        row = col.row()
+        sub_col = row.column()
+        sub_row = sub_col.row()
+        sub_row.enabled = False
+        if scn.Motion_blur_position == '3':
+            sub_row.enabled = True
+        sub_row.prop(scn, 'Motion_blur_start', text = "Start") 
+        sub_row.prop(scn, 'Motion_blur_end', text = "End") 
+        sub_row_l = sub_col.row()
+        sub_row_l.enabled = False
+        if scn.Motion_blur_position != '3':
+            sub_row_l.enabled = True 
+            sub_row.enabled = False    
+        sub_row_l.prop(scn, 'Motion_blur_length', text = "Length")
+class ARNOLD_main_lights(classes.ArnoldRenderPanel):
+    bl_label = "Lights"
+    bl_options = {'DEFAULT_CLOSED'}
+    tabNum = {'0'}
+    COMPAT_ENGINES = {'arnold_renderer'}
+    @classmethod
+    def poll(cls, context):
+        arnold_menu = context.scene.ArnoldEnum
+        rd = context.scene.render
+        return (rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES) and (arnold_menu in cls.tabNum)
+    def draw(self, context):      
+        layout = self.layout 
+        scn = context.scene
+        row = layout.row()
+        row.prop(scn, 'Main_lights', text = "Low light threshold")
+class ARNOLD_main_textures(classes.ArnoldRenderPanel):
+    bl_label = "Textures"
+    bl_options = {'DEFAULT_CLOSED'}
+    tabNum = {'0'}
+    COMPAT_ENGINES = {'arnold_renderer'}
+    @classmethod
+    def poll(cls, context):
+        arnold_menu = context.scene.ArnoldEnum
+        rd = context.scene.render
+        return (rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES) and (arnold_menu in cls.tabNum)
+    def draw(self, context):      
+        layout = self.layout 
+        scn = context.scene
+        row = layout.row()
+        row.prop(scn, 'Texture_accept_unmipped') 
+        row = layout.row()
+        row.prop(scn, 'Texture_auto_mipmap')
+        row = layout.row()
+        row.prop(scn, 'Texture_accept_untiled') 
+        row = layout.row()
+        row.prop(scn, 'Texture_auto_tile') 
+        row = layout.row()
+        row.prop(scn, 'Texture_tile_size') 
+        row = layout.row()
+        row.prop(scn, 'Texture_use_existing')
+        row = layout.row()
+        row.prop(scn, 'Texture_max_cache')
+        row = layout.row()
+        row.prop(scn, 'Texture_max_open')
+        row = layout.row()
+        row.prop(scn, 'Texture_diffuse_blur')
+        row = layout.row()
+        row.prop(scn, 'Texture_glossy_blur')
+        
 class Arnold_panel_Button(bpy.types.Operator):
     bl_idname = "arnold.button"
     bl_label = "Button"
@@ -294,7 +432,9 @@ def register():
     bpy.utils.register_class(ARNOLD_main_sampling) 
     bpy.utils.register_class(ARNOLD_main_Ray_depth)
     bpy.utils.register_class(ARNOLD_main_Environment) 
-    bpy.utils.register_class(ARNOLD_main_Motion_blur)     
+    bpy.utils.register_class(ARNOLD_main_Motion_blur)
+    bpy.utils.register_class(ARNOLD_main_lights)  
+    bpy.utils.register_class(ARNOLD_main_textures)
     bpy.utils.register_class(Arnold_panel_Button)
     bpy.utils.register_class(SceneSettingItem)
 
@@ -306,6 +446,8 @@ def unregister():
     bpy.utils.unregister_class(ARNOLD_main_Ray_depth) 
     bpy.utils.unregister_class(ARNOLD_main_Environment)
     bpy.utils.unregister_class(ARNOLD_main_Motion_blur) 
+    bpy.utils.unregister_class(ARNOLD_main_lights)
+    bpy.utils.unregister_class(ARNOLD_main_textures)
     bpy.utils.unregister_class(Arnold_panel_Button)
     bpy.utils.unregister_class(SceneSettingItem)
 
