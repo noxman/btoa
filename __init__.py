@@ -10,9 +10,16 @@ bl_info = {
     "tracker_url": "https://github.com/noxman/btoa/issues",
     "category": "Render"}
     
-import bpy
-from btoa import ui
-from btoa import engine
+if "bpy" in locals():
+    import imp
+    imp.reload(ui)
+    imp.reload(render)
+    imp.reload(update_files)
+
+else:
+    import bpy
+    from btoa import ui
+    from btoa import engine
 
 def register():
     engine.register()
