@@ -30,14 +30,4 @@ MotionblurPositon = [("0","start on frame","motion blur position"),
                      ("1","center on frame","motion blur position"),
                      ("2","end on frame","motion blur position"),
                      ("3","custom","motion blur position")]
-class ArnoldPanel(bpy.types.Panel):
-    COMPAT_ENGINES = {'arnold_renderer'}
-    @classmethod
-    def poll(cls, context):
-        rd = context.scene.render
-        return (rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES)
-class ArnoldRenderPanel(ArnoldPanel):
-    bl_space_type  = 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    bl_context     = 'render'
 

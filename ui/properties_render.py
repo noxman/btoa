@@ -4,14 +4,24 @@
 import bpy
 from btoa.ui import classes
 
-class ARNOLD_RP_render(classes.ArnoldRenderPanel):
+class ArnoldPanel(bpy.types.Panel):
+    COMPAT_ENGINES = {'arnold_renderer'}
+    @classmethod
+    def poll(cls, context):
+        rd = context.scene.render
+        return (rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES)
+class ArnoldRenderPanel(ArnoldPanel):
+    bl_space_type  = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context     = 'render'
+class ARNOLD_RP_render(ArnoldRenderPanel):
     bl_label = ""
     bl_options = {'HIDE_HEADER'}
     def draw(self, context):
         layout = self.layout
         row = layout.row()
         row.operator("arnold.button", text="Render",icon="RENDER_STILL")
-class ARNOLD_tab_render(classes.ArnoldRenderPanel):
+class ARNOLD_tab_render(ArnoldRenderPanel):
     bl_label = ""
     bl_options = {'HIDE_HEADER'}
     def draw(self, context):      
@@ -20,7 +30,7 @@ class ARNOLD_tab_render(classes.ArnoldRenderPanel):
         layout.prop(scn,'ArnoldEnum',expand=True)
         #arnold_menu = context.scene.ArnoldEnum       
 
-class ARNOLD_main_sampling(classes.ArnoldRenderPanel):
+class ARNOLD_main_sampling(ArnoldRenderPanel):
     bl_label = "Sampling"
     #bl_options = {'DEFAULT_CLOSED'}
     tabNum = {'0'}
@@ -92,7 +102,7 @@ class ARNOLD_main_sampling(classes.ArnoldRenderPanel):
             row = layout.row()
             row.prop(scn, 'Motion_blur_position', text = "Positon")  
        
-class ARNOLD_main_Ray_depth(classes.ArnoldRenderPanel):
+class ARNOLD_main_Ray_depth(ArnoldRenderPanel):
     bl_label = "Ray depth"
     bl_options = {'DEFAULT_CLOSED'}
     tabNum = {'0'}
@@ -121,7 +131,7 @@ class ARNOLD_main_Ray_depth(classes.ArnoldRenderPanel):
         row.prop(scn, 'Ray_depth_trans_depth',text = "Transparency depth")
         row = layout.row()
         row.prop(scn, 'Ray_depth_trans_threshold',text = "Transparency threshold")
-class ARNOLD_main_Environment(classes.ArnoldRenderPanel):
+class ARNOLD_main_Environment(ArnoldRenderPanel):
     bl_label = "Environment"
     bl_options = {'DEFAULT_CLOSED'}
     tabNum = {'0'}
@@ -139,7 +149,7 @@ class ARNOLD_main_Environment(classes.ArnoldRenderPanel):
         row = layout.row()
         row.label('Atmosphere')
         row.prop(scn, 'Ray_depth_total')
-class ARNOLD_main_Motion_blur(classes.ArnoldRenderPanel):
+class ARNOLD_main_Motion_blur(ArnoldRenderPanel):
     bl_label = "Motion blur"
     bl_options = {'DEFAULT_CLOSED'}
     tabNum = {'0'}
@@ -181,7 +191,7 @@ class ARNOLD_main_Motion_blur(classes.ArnoldRenderPanel):
             sub_row_l.enabled = True 
             sub_row.enabled = False    
         sub_row_l.prop(scn, 'Motion_blur_length', text = "Length")
-class ARNOLD_main_lights(classes.ArnoldRenderPanel):
+class ARNOLD_main_lights(ArnoldRenderPanel):
     bl_label = "Lights"
     bl_options = {'DEFAULT_CLOSED'}
     tabNum = {'0'}
@@ -196,7 +206,7 @@ class ARNOLD_main_lights(classes.ArnoldRenderPanel):
         scn = context.scene.arnold
         row = layout.row()
         row.prop(scn, 'Main_lights', text = "Low light threshold")
-class ARNOLD_main_textures(classes.ArnoldRenderPanel):
+class ARNOLD_main_textures(ArnoldRenderPanel):
     bl_label = "Textures"
     bl_options = {'DEFAULT_CLOSED'}
     tabNum = {'0'}

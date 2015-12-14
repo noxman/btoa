@@ -1,13 +1,13 @@
 import bpy
-from btoa.ui import classes
-class ArnoldTools(classes.ArnoldPanel,bpy.types.Panel):
+from btoa.ui import properties_render
+
+class ArnoldTools(properties_render.ArnoldPanel):
     """Creates a Panel in the TOOLS window"""
     bl_category = "Arnold"
     bl_label = "BtoA"
     bl_idname = "TOOLS_Arnold"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
-    COMPAT_ENGINES = 'arnold_renderer'
     def draw(self, context):
         layout = self.layout
         layout.label("Light:",icon="LAMP_DATA")
@@ -104,11 +104,9 @@ class Arnold_Tools_Button(bpy.types.Operator):
     bl_label = "Button"  
          
 def register():
-    
     bpy.utils.register_class(ArnoldTools)
     bpy.utils.register_class(Arnold_Tools_Button)
 def unregister():
-    
     bpy.utils.unregister_class(ArnoldTools)
     bpy.utils.unregister_class(Arnold_Tools_Button)  
      
