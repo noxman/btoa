@@ -104,12 +104,11 @@ class Arnold_Tools_Button(bpy.types.Operator):
     bl_label = "Button"  
          
 def register():
-    bpy.utils.register_class(ArnoldTools)
-    bpy.utils.register_class(Arnold_Tools_Button)
+    bpy.utils.register_module(__name__)
+    
 def unregister():
-    bpy.utils.unregister_class(ArnoldTools)
-    bpy.utils.unregister_class(Arnold_Tools_Button)  
-     
+    bpy.utils.unregister_module(__name__)
+   
 #if __name__ == "__main__":
 #    register()    
  

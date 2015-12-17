@@ -49,11 +49,10 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         self.end_result(result)
              
 # Register the RenderEngine
-def register():
-    
+def register():    
     bpy.utils.register_class(ArnoldRenderEngine)
+    
 def unregister():
-
     bpy.utils.unregister_class(ArnoldRenderEngine)
     
 #from bl_ui import properties_render

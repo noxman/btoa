@@ -1,3 +1,4 @@
+from email.policy import default
 bl_info = {
     "name": "Blender to Arnold 0.1",
     "author": "Noxman - xxc1982@gmail.com",
@@ -10,36 +11,42 @@ bl_info = {
     "tracker_url": "https://github.com/noxman/btoa/issues",
     "category": "Render"}
     
-if "bpy" in locals():
-    import imp
-    imp.reload(ui)
-    imp.reload(engine)
 
-else:
-    import bpy
-    from btoa import ui
-    from btoa import engine
-    from bpy.types import (AddonPreferences,
-                           PropertyGroup,
-                           Operator,
-                           )
-    from bpy.props import (StringProperty,
-                           BoolProperty,
-                           IntProperty,
-                           FloatProperty,
-                           FloatVectorProperty,
-                           EnumProperty,
-                           PointerProperty,
-                           )
-    from btoa.ui.classes import (PanelGroups,
-                                 FilterTypes,
-                                 FilterDomain,
-                                 MotionblurPositon
-                                 )
+import bpy
+from btoa import ui
+from btoa import engine
+from bpy.types import (AddonPreferences,
+                        PropertyGroup,
+                        Operator,
+                        )
+from bpy.props import (StringProperty,
+                        BoolProperty,
+                        IntProperty,
+                        FloatProperty,
+                        FloatVectorProperty,
+                        EnumProperty,
+                        PointerProperty,
+                        FloatVectorProperty
+                        )
+from btoa.ui.classes import (PanelGroups,
+                            FilterTypes,
+                            FilterDomain,
+                            MotionblurPositon,
+                            RenderBucketscanning,
+                            RenderDisplaybucket,
+                            LogVerbositylevel
+                            )
 class ArnoldRenderSetting(PropertyGroup):
-    ###------Render Tab------
+    
+    #===========================================================================
+    # #Render Tab --------------------------------------------------------------
+    #===========================================================================
     ArnoldEnum = EnumProperty(items=PanelGroups)
-    ###------Sampling-------
+    
+    #===========================================================================
+    # #Main --------------------------------------------------------------------
+    #===========================================================================
+    # Sampling -----------------------------------------------------------------
     CameraInt = IntProperty(
         name = "", 
         min = 1, max = 10,
@@ -82,13 +89,13 @@ class ArnoldRenderSetting(PropertyGroup):
         precision = 3,
         step = 1,
         description = "Enter an float",default = 10)
-    Filter_Types = bpy.props.EnumProperty(items=FilterTypes,default = "10")
+    Filter_Types = bpy.props.EnumProperty(items = FilterTypes,default = "10")
     Filter_width = FloatProperty(
         name = "",
         precision = 2,
         step = 1,
         description = "Enter an float",default = 2) 
-    Filter_Domain = bpy.props.EnumProperty(items=FilterDomain)
+    Filter_Domain = bpy.props.EnumProperty(items = FilterDomain)
     Filter_minimum = FloatProperty(
         name = "",
         precision = 2,
@@ -102,7 +109,7 @@ class ArnoldRenderSetting(PropertyGroup):
     Filter_scalar_mode = BoolProperty(
         name = "Default filter.scalar_mode", 
         description = "True or False?") 
-    ###------Ray depth
+    # Ray depth ----------------------------------------------------------------
     Ray_depth_total = IntProperty(
         name = "", 
         min = 0, max = 16,
@@ -137,9 +144,9 @@ class ArnoldRenderSetting(PropertyGroup):
         precision = 2,
         step = 1,
         description = "Enter an float",default = 0.99) 
-    ###------Environment------ 
+    # Environment --------------------------------------------------------------
     
-    ###------Motion blur------
+    # Motion blur --------------------------------------------------------------
     Motion_blur_enable = BoolProperty(
         name = "Enable", 
         description = "True or False?") 
@@ -153,7 +160,7 @@ class ArnoldRenderSetting(PropertyGroup):
         name = "Keys", 
         min = 2, max = 30,
         description = "Enter an integer",default = 2) 
-    Motion_blur_position = bpy.props.EnumProperty(items=MotionblurPositon, default = "1")                                           
+    Motion_blur_position = EnumProperty(items = MotionblurPositon, default = "1")                                           
     Motion_blur_length = FloatProperty(
         name = "",
         min = 0, max = 1,
@@ -172,14 +179,14 @@ class ArnoldRenderSetting(PropertyGroup):
         precision = 2,
         step = 1,
         description = "Enter an float",default = 0.25) 
-    ###------Lights------
+    # Lights -------------------------------------------------------------------
     Main_lights = FloatProperty(
         name = "",
         min = 0, max = 0.1,
         precision = 3,
         step = 1,
         description = "Enter an float",default = 0.001) 
-    ###------Textures------
+    # Textures -----------------------------------------------------------------
     Texture_accept_unmipped = BoolProperty(
         name = "Accept unmipped", 
         description = "True or False?",
@@ -221,14 +228,207 @@ class ArnoldRenderSetting(PropertyGroup):
         precision = 2,
         step = 1,
         description = "Enter an float", default = 0) 
+    
+    #===========================================================================
+    # #System ------------------------------------------------------------------
+    #===========================================================================
+    # Render setting -----------------------------------------------------------
+    Render_bucket_scanning = EnumProperty(items = RenderBucketscanning, default = "6")
+    Render_buket_size = IntProperty(
+        name = "Bucket size",
+        min = 16, max = 256, 
+        description = "Enter an integer", default = 16)
+    Render_display_bucket = EnumProperty(items = RenderDisplaybucket, default = "1")
+    Render_autodetect_threads = BoolProperty(
+        name = "Autodetect threads", 
+        description = "True or False?",
+        default = True)
+    Render_threads =  IntProperty(
+        name = "THreads",
+        description = "Enter an integer", default = 0)
+    Render_expand_procedurals = BoolProperty(
+        name = "Expand procedurals", 
+        description = "True or False?",
+        default = False)
+    Render_export_scale = FloatProperty(
+        name = "Export scale",
+        precision = 2,
+        step = 1,
+        description = "Enter an float", default = 0.01)
+    # IPR ----------------------------------------------------------------------
+    Ipr_progressive_refinement =  BoolProperty(
+        name = "Progressive refinement", 
+        description = "True or False?",
+        default = True)
+    Ipr_initial_sampling =  IntProperty(
+        name = "THreads",
+        min = -10, max = 1,
+        description = "Enter an integer", default = -3)
+    # Search paths -------------------------------------------------------------
+    Search_procedural_path = StringProperty(
+        name="Procedural",
+        description="Folders have to be separated with a semicolon (;) character",
+        default = "",
+        )
+    Search_shader_path = StringProperty(
+        name="Shader",
+        description="Folders have to be separated with a semicolon (;) character",
+        default = "",
+        )
+    Search_texture_path = StringProperty(
+        name="Texture",
+        description="Folders have to be separated with a semicolon (;) character",
+        default = "",
+        )
+    # Licensing ----------------------------------------------------------------
+    Licensing_abort = BoolProperty(
+        name = "Abort on license fail", 
+        description = "True or False?",
+        default = False)
+    Licensing_skip = BoolProperty(
+        name = "Skip license check", 
+        description = "True or False?",
+        default = False)
+    #===========================================================================
+    # AOVs
+    #===========================================================================
+    # Aovs ---------------------------------------------------------------------
+    Aovs_shaders_builtin = BoolProperty(
+        name = "<built-in>", 
+        description = "True or False?",
+        default = False)
+    Aovs_shaders_hair = BoolProperty(
+        name = "hair", 
+        description = "True or False?",
+        default = False)
+    Aovs_shaders_lambert = BoolProperty(
+        name = "lambert", 
+        description = "True or False?",
+        default = False)
+    Aovs_shaders_mix = BoolProperty(
+        name = "mix", 
+        description = "True or False?",
+        default = False)
+    Aovs_shaders_shadowmatte = BoolProperty(
+        name = "shadow_matte", 
+        description = "True or False?",
+        default = False)
+    Aovs_shaders_skin = BoolProperty(
+        name = "skin", 
+        description = "True or False?",
+        default = False)
+    Aovs_shaders_standard = BoolProperty(
+        name = "standard", 
+        description = "True or False?",
+        default = False)
+    #===========================================================================
+    # Diagonstics
+    #===========================================================================
+    # Log ----------------------------------------------------------------------
+    Log_verbosity_level = EnumProperty(items = LogVerbositylevel, default = "1")
+    Log_console = BoolProperty(
+        name = "Console", 
+        description = "True or False?",
+        default = True)
+    Log_file = BoolProperty(
+        name = "File", 
+        description = "True or False?",
+        default = False)
+    Log_file_path = StringProperty(
+        name="File path",
+        description="log file path ",
+        subtype = "FILE_PATH",
+        default = "arnold.log",
+        maxlen=1024
+        )
+    Log_max_warnings = IntProperty(
+        name = "Max warnings",
+        min = 0, max = 100,
+        description = "Enter an integer", default = 5)
+    # Error handing ------------------------------------------------------------
+    Error_abort = BoolProperty(
+        name = "Abort on error", 
+        description = "True or False?",
+        default = True)
+    Error_texture_error = FloatVectorProperty(
+        name="Texture error color", description = "",
+        precision=4, step=0.01, min=0.0, soft_max=1.0,
+        default=(1, 0, 0), subtype='COLOR')
+    Error_nan_error = FloatVectorProperty(
+        name="NaN error color", description = "",
+        precision=4, step=0.01, min=0.0, soft_max=1.0,
+        default=(0, 0, 1), subtype='COLOR')
+    #===========================================================================
+    # Overrider
+    #===========================================================================
+    # User options -------------------------------------------------------------
+    User_options_overrider = StringProperty(
+        name="Options",
+        description="arnold kick options ",
+        default = "",
+        )
+    # Feature overrides --------------------------------------------------------
+    Feature_override_textures = BoolProperty(
+        name = "Ignore textures", 
+        description = "True or False?",
+        default = False)
+    Feature_override_shaders = BoolProperty(
+        name = "Ignore shaders", 
+        description = "True or False?",
+        default = False)
+    Feature_override_atmosphere = BoolProperty(
+        name = "Ignore atmosphere", 
+        description = "True or False?",
+        default = False)
+    Feature_override_lights = BoolProperty(
+        name = "Ignore lights", 
+        description = "True or False?",
+        default = False)
+    Feature_override_shadows = BoolProperty(
+        name = "Ignore shadows", 
+        description = "True or False?",
+        default = False)
+    Feature_override_subdivision = BoolProperty(
+        name = "Ignore subdivision", 
+        description = "True or False?",
+        default = False)
+    Feature_override_displacement = BoolProperty(
+        name = "Ignore displacement", 
+        description = "True or False?",
+        default = False)
+    Feature_override_bump = BoolProperty(
+        name = "Ignore bump", 
+        description = "True or False?",
+        default = False)
+    Feature_override_normal = BoolProperty(
+        name = "Ignore normal smoothing", 
+        description = "True or False?",
+        default = False)
+    Feature_override_motion = BoolProperty(
+        name = "Ignore motion blur", 
+        description = "True or False?",
+        default = False)
+    Feature_override_depth = BoolProperty(
+        name = "Ignore depth of field", 
+        description = "True or False?",
+        default = False)
+    Feature_override_subsurface = BoolProperty(
+        name = "Ignore sub-surface scattering", 
+        description = "True or False?",
+        default = False)
+    # Shader override
+    # Subdivision --------------------------------------------------------------
+    Subdivision_max_subdivisions = IntProperty(
+        name = "Max subdivisions",
+        min = 0, max = 999,
+        description = "Enter an integer", default = 999)
+    
 def register():
     bpy.utils.register_module(__name__)
-    #engine.register()
-    ui.register()
     bpy.types.Scene.arnold = PointerProperty(type = ArnoldRenderSetting)
+    
 
 def unregister():
     bpy.utils.unregister_module(__name__)
-    #engine.unregister()
-    ui.unregister()
     del bpy.types.Scene.arnold
+    

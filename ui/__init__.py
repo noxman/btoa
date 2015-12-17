@@ -1,18 +1,12 @@
 #
 # arnold For Blender
 #
+from btoa.ui import tools
+from btoa.ui import properties_render
 
 def register():
-    from btoa.ui import tools
-    from btoa.ui import properties_render
-
-    tools.register()
-    properties_render.register()
-
+    bpy.utils.register_module(__name__)
 
 def unregister():
-    from btoa.ui import tools
-    from btoa.ui import properties_render
-    
-    tools.unregister()
-    properties_render.unregister()
+    bpy.utils.register_module(__name__)
+

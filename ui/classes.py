@@ -30,4 +30,21 @@ MotionblurPositon = [("0","start on frame","motion blur position"),
                      ("1","center on frame","motion blur position"),
                      ("2","end on frame","motion blur position"),
                      ("3","custom","motion blur position")]
+RenderBucketscanning = [("0","top",""),
+                       ("1","bottom",""),
+                       ("2","left",""),
+                       ("3","right",""),
+                       ("4","woven",""),
+                       ("5","spiral",""),
+                       ("6","hilbert","")
+                       ]
+RenderDisplaybucket = [("0","enabled",""),
+                       ("1","disabled in IPR",""),
+                       ("2","disabled","")
+                       ]
+LogVerbositylevel = [("0","Errors",""),
+                    ("1","Warnings",""),
+                    ("2","Info",""),
+                    ("3","Debug","")
+                    ]
 
