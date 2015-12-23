@@ -1,13 +1,19 @@
 import bpy
 from btoa.ui import properties_render
 
-class ArnoldTools(properties_render.ArnoldPanel):
+class ArnoldTools(bpy.types.Panel):
     """Creates a Panel in the TOOLS window"""
     bl_category = "Arnold"
     bl_label = "BtoA"
     bl_idname = "TOOLS_Arnold"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
+    COMPAT_ENGINES = {'arnold_renderer'}
+    @classmethod
+    def poll(cls, context):
+        scn = context.scene.arnold
+        rd = context.scene.render
+        return (rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES)
     def draw(self, context):
         layout = self.layout
         layout.label("Light:",icon="LAMP_DATA")

@@ -4,9 +4,8 @@
 import bpy
 PanelGroups = [("0","Main","main setting"),
                 ("1","System","system setting"),
-                ("2","AOVs","aovs setting"),
-                ("3","Diagnostics","diagnostics setting"),
-                ("4","Override","override setting")]
+                ("2","Diagnostics","diagnostics setting"),
+                ("3","Override","override setting")]
 FilterTypes = [("0","blackman_harris_filter","filter type"),
                 ("1","box_filter","filter type"),
                 ("2","catrom2d_filter","filter type"),
@@ -47,4 +46,25 @@ LogVerbositylevel = [("0","Errors",""),
                     ("2","Info",""),
                     ("3","Debug","")
                     ]
-
+AovsShaders = ["ID","N","P","Pref","Z","beauty",
+                    "cputime","direct_diffuse","direct_specular",
+                    "direct_sss","direct_transmission",
+                    "emission","indirect_diffuse",
+                    "indirect_specular","indirect_sss",
+                    "motionvector","opacity",
+                    "raycount","reflection",
+                    "refraction","refraction_opactiy",
+                    "shadow","shadow_matte",
+                    "sheen","specular",
+                    "sss","texturetime",
+                    "volume","volume_direct",
+                    "volume_indirect","volum_opacity"
+                    ]
+AovsDriverType = [("0","driver_arnold_display",""),
+                    ("1","driver_deepexr",""),
+                    ("2","driver_display",""),
+                    ("3","driver_exr",""),
+                    ("4","driver_jpeg",""),
+                    ("5","driver_png",""),
+                    ("6","driver_tiff","")
+                    ]

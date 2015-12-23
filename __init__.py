@@ -17,7 +17,8 @@ from btoa import ui
 from btoa import engine
 from bpy.types import (AddonPreferences,
                         PropertyGroup,
-                        Operator,
+                        CollectionProperty,
+                        Operator
                         )
 from bpy.props import (StringProperty,
                         BoolProperty,
@@ -26,7 +27,8 @@ from bpy.props import (StringProperty,
                         FloatVectorProperty,
                         EnumProperty,
                         PointerProperty,
-                        FloatVectorProperty
+                        FloatVectorProperty,
+                        BoolVectorProperty
                         )
 from btoa.ui.classes import (PanelGroups,
                             FilterTypes,
@@ -34,10 +36,12 @@ from btoa.ui.classes import (PanelGroups,
                             MotionblurPositon,
                             RenderBucketscanning,
                             RenderDisplaybucket,
-                            LogVerbositylevel
+                            LogVerbositylevel,
+                            AovsDriverType
                             )
-class ArnoldRenderSetting(PropertyGroup):
-    
+from btoa.ui.properties_render import Aovs_new_driver
+
+class ArnoldSceneSetting(PropertyGroup):
     #===========================================================================
     # #Render Tab --------------------------------------------------------------
     #===========================================================================
@@ -48,27 +52,27 @@ class ArnoldRenderSetting(PropertyGroup):
     #===========================================================================
     # Sampling -----------------------------------------------------------------
     CameraInt = IntProperty(
-        name = "", 
+        name = "Camera(AA)", 
         min = 1, max = 10,
         description = "Enter an integer",default = 3)
     DiffuseInt = IntProperty(
-        name = "", 
+        name = "Diffuse", 
         min = 0, max = 10,
         description = "Enter an integer",default = 2)
     GlossyInt = IntProperty(
-        name = "", 
+        name = "Glossy", 
         min = 0, max = 10,
         description = "Enter an integer",default = 2)
     RefractionInt = IntProperty(
-        name = "", 
+        name = "Refraction", 
         min = 0, max = 10,
         description = "Enter an integer",default = 2)
     SSSInt = IntProperty(
-        name = "", 
+        name = "SSS", 
         min = 0, max = 10,
         description = "Enter an integer",default = 2)
     Volume_indirectInt = IntProperty(
-        name = "", 
+        name = "Volumeindirect", 
         min = 0, max = 10,
         description = "Enter an integer",default = 2)
     Lock_sampling = BoolProperty(
@@ -84,25 +88,25 @@ class ArnoldRenderSetting(PropertyGroup):
         name = "Affect AOVs", 
         description = "True or False?") 
     Clamp_max = FloatProperty(
-        name = "", 
+        name = "Max value", 
         min = 0.001, max = 100.000,
         precision = 3,
         step = 1,
         description = "Enter an float",default = 10)
-    Filter_Types = bpy.props.EnumProperty(items = FilterTypes,default = "10")
+    Filter_Types = EnumProperty(items = FilterTypes, default = "10", name = "Default filter.type")
     Filter_width = FloatProperty(
-        name = "",
+        name = "Default filter.width",
         precision = 2,
         step = 1,
         description = "Enter an float",default = 2) 
-    Filter_Domain = bpy.props.EnumProperty(items = FilterDomain)
+    Filter_Domain = EnumProperty(items = FilterDomain)
     Filter_minimum = FloatProperty(
-        name = "",
+        name = "Default filter.minimum",
         precision = 2,
         step = 1,
         description = "Enter an float",default = 0) 
     Filter_maximum = FloatProperty(
-        name = "",
+        name = "Default filter.maximum",
         precision = 2,
         step = 1,
         description = "Enter an float",default = 1) 
@@ -111,35 +115,35 @@ class ArnoldRenderSetting(PropertyGroup):
         description = "True or False?") 
     # Ray depth ----------------------------------------------------------------
     Ray_depth_total = IntProperty(
-        name = "", 
+        name = "Total", 
         min = 0, max = 16,
         description = "Enter an integer",default = 10)
     Ray_depth_diffuse = IntProperty(
-        name = "", 
+        name = "Diffuse", 
         min = 0, max = 16,
         description = "Enter an integer",default = 1) 
     Ray_depth_glossy = IntProperty(
-        name = "", 
+        name = "Glossy", 
         min = 0, max = 16,
         description = "Enter an integer",default = 1)           
     Ray_depth_reflection = IntProperty(
-        name = "", 
+        name = "Reflection", 
         min = 0, max = 16,
         description = "Enter an integer",default = 2)     
     Ray_depth_refraction = IntProperty(
-        name = "", 
+        name = "Refraction", 
         min = 0, max = 16,
         description = "Enter an integer",default = 2)  
     Ray_depth_volume = IntProperty(
-        name = "", 
+        name = "Volume", 
         min = 0, max = 16,
         description = "Enter an integer",default = 0)   
     Ray_depth_trans_depth = IntProperty(
-        name = "", 
+        name = "Transparency depth", 
         min = 0, max = 16,
         description = "Enter an integer",default = 10)
     Ray_depth_trans_threshold = FloatProperty(
-        name = "",
+        name = "Transparency threshold",
         min = 0, max = 1,
         precision = 2,
         step = 1,
@@ -160,28 +164,28 @@ class ArnoldRenderSetting(PropertyGroup):
         name = "Keys", 
         min = 2, max = 30,
         description = "Enter an integer",default = 2) 
-    Motion_blur_position = EnumProperty(items = MotionblurPositon, default = "1")                                           
+    Motion_blur_position = EnumProperty(items = MotionblurPositon, default = "1", name = "Positon")                                           
     Motion_blur_length = FloatProperty(
-        name = "",
+        name = "Length",
         min = 0, max = 1,
         precision = 2,
         step = 1,
         description = "Enter an float",default = 0.5)
     Motion_blur_start = FloatProperty(
-        name = "",
+        name = "Start",
         min = 0, max = 1,
         precision = 2,
         step = 1,
         description = "Enter an float",default = -0.25) 
     Motion_blur_end = FloatProperty(
-        name = "",
+        name = "End",
         min = 0, max = 1,
         precision = 2,
         step = 1,
         description = "Enter an float",default = 0.25) 
     # Lights -------------------------------------------------------------------
     Main_lights = FloatProperty(
-        name = "",
+        name = "Low light threshold",
         min = 0, max = 0.1,
         precision = 3,
         step = 1,
@@ -233,12 +237,12 @@ class ArnoldRenderSetting(PropertyGroup):
     # #System ------------------------------------------------------------------
     #===========================================================================
     # Render setting -----------------------------------------------------------
-    Render_bucket_scanning = EnumProperty(items = RenderBucketscanning, default = "6")
+    Render_bucket_scanning = EnumProperty(items = RenderBucketscanning, default = "6", name = "Bucket scanning")
     Render_buket_size = IntProperty(
         name = "Bucket size",
         min = 16, max = 256, 
         description = "Enter an integer", default = 16)
-    Render_display_bucket = EnumProperty(items = RenderDisplaybucket, default = "1")
+    Render_display_bucket = EnumProperty(items = RenderDisplaybucket, default = "1", name = "Display bucket corners")
     Render_autodetect_threads = BoolProperty(
         name = "Autodetect threads", 
         description = "True or False?",
@@ -278,7 +282,7 @@ class ArnoldRenderSetting(PropertyGroup):
     Search_texture_path = StringProperty(
         name="Texture",
         description="Folders have to be separated with a semicolon (;) character",
-        default = "",
+        default = ""
         )
     # Licensing ----------------------------------------------------------------
     Licensing_abort = BoolProperty(
@@ -289,38 +293,7 @@ class ArnoldRenderSetting(PropertyGroup):
         name = "Skip license check", 
         description = "True or False?",
         default = False)
-    #===========================================================================
-    # AOVs
-    #===========================================================================
-    # Aovs ---------------------------------------------------------------------
-    Aovs_shaders_builtin = BoolProperty(
-        name = "<built-in>", 
-        description = "True or False?",
-        default = False)
-    Aovs_shaders_hair = BoolProperty(
-        name = "hair", 
-        description = "True or False?",
-        default = False)
-    Aovs_shaders_lambert = BoolProperty(
-        name = "lambert", 
-        description = "True or False?",
-        default = False)
-    Aovs_shaders_mix = BoolProperty(
-        name = "mix", 
-        description = "True or False?",
-        default = False)
-    Aovs_shaders_shadowmatte = BoolProperty(
-        name = "shadow_matte", 
-        description = "True or False?",
-        default = False)
-    Aovs_shaders_skin = BoolProperty(
-        name = "skin", 
-        description = "True or False?",
-        default = False)
-    Aovs_shaders_standard = BoolProperty(
-        name = "standard", 
-        description = "True or False?",
-        default = False)
+    
     #===========================================================================
     # Diagonstics
     #===========================================================================
@@ -422,13 +395,74 @@ class ArnoldRenderSetting(PropertyGroup):
         name = "Max subdivisions",
         min = 0, max = 999,
         description = "Enter an integer", default = 999)
+    #===========================================================================
+    # AOVs
+    #===========================================================================
+    # Aovs ---------------------------------------------------------------------
+    Avos_is_setup =  BoolProperty(
+        name = "Set button", 
+        description = "True or False?",
+        default = False)
+    Avos_driver_list = StringProperty(
+        name="Options",
+        description="arnold kick options",
+        default = "0,<display driver>(driver_blender_display),default driver,\
+                    0,0,0,0,0,0,0,\
+                    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;"
+        )
+    Aovs_driver = EnumProperty(items = Aovs_new_driver.get_list, name = "Driver", update = Aovs_new_driver.update_driver)
+    Aovs_driver_type = EnumProperty(items = AovsDriverType, default = "2", name = "Type")
+    Aovs_driver_type_name = StringProperty(name="Name",
+        description="New add driver name",
+        default = "")
+    Aovs_shaders_builtin = BoolProperty(
+        name = "<built-in>", 
+        description = "True or False?",
+        default = False,
+        update = Aovs_new_driver.update_item)
+    Aovs_shaders_hair = BoolProperty(
+        name = "hair", 
+        description = "True or False?",
+        default = False,
+        update = Aovs_new_driver.update_item)
+    Aovs_shaders_lambert = BoolProperty(
+        name = "lambert", 
+        description = "True or False?",
+        default = False,
+        update = Aovs_new_driver.update_item)
+    Aovs_shaders_mix = BoolProperty(
+        name = "mix", 
+        description = "True or False?",
+        default = False,
+        update = Aovs_new_driver.update_item)
+    Aovs_shaders_shadowmatte = BoolProperty(
+        name = "shadow_matte", 
+        description = "True or False?",
+        default = False,
+        update = Aovs_new_driver.update_item)
+    Aovs_shaders_skin = BoolProperty(
+        name = "skin", 
+        description = "True or False?",
+        default = False,
+        update = Aovs_new_driver.update_item)
+    Aovs_shaders_standard = BoolProperty(
+        name = "standard", 
+        description = "True or False?",
+        default = False,
+        update = Aovs_new_driver.update_item)
+    Aovs_shaders_item = BoolVectorProperty(
+        name = "Item",
+        size = 32,
+        description = "True or False?",
+        update = Aovs_new_driver.update_item)
     
 def register():
     bpy.utils.register_module(__name__)
-    bpy.types.Scene.arnold = PointerProperty(type = ArnoldRenderSetting)
-    
+    bpy.types.Scene.arnold = PointerProperty(type = ArnoldSceneSetting)
 
 def unregister():
     bpy.utils.unregister_module(__name__)
     del bpy.types.Scene.arnold
-    
+
+if __name__ == "__main__":
+    register()    
