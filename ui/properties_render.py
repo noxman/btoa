@@ -3,6 +3,7 @@
 #
 import bpy
 from btoa.ui import classes
+from btoa import render
 
 class Arnold_panel_Button(bpy.types.Operator):
     bl_idname = "arnold.button"
@@ -66,7 +67,7 @@ class Aovs_new_driver(bpy.types.Operator):
                             t_items = t_items + items[i] +','
                     i_item = t_items
                 total = total + i_item + ';'     
-        scn.Avos_driver_list = total    
+        scn.Avos_driver_list = total   
     def update_driver(self, context):
         scn = context.scene.arnold
         driver_items_back = scn.Avos_driver_list
@@ -104,7 +105,7 @@ class Aovs_new_driver(bpy.types.Operator):
                     else:
                         scn.Aovs_shaders_standard = False
                     for i in range(0,32):
-                        if items[i+9] == '1':
+                        if items[i+10] == '1':
                             scn.Aovs_shaders_item[i] = True
                         else:
                             scn.Aovs_shaders_item[i] = False       
@@ -117,7 +118,7 @@ class Aovs_new_driver(bpy.types.Operator):
             if i_item:
                 items = i_item.split(",")
                 enum_list = (items[0],items[1],items[2])
-                item.append(enum_list)
+                item.append(enum_list)       
         return item
     def execute(self, context):
         scn = context.scene.arnold
@@ -147,9 +148,27 @@ class Aovs_new_driver(bpy.types.Operator):
         row.prop(scn, 'Aovs_driver_type_name')
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
-    def Aovs_driver_list(self, context): 
-        return Aovs_new_driver.driver_items 
-
+    
+class Aovs_del_driver(bpy.types.Operator): 
+    bl_idname = "aovs.deldriver" 
+    bl_label = "AvosDelDriver" 
+    def execute(self, context):
+        scn = context.scene.arnold
+        driver_items_back = scn.Avos_driver_list
+        driver_items_back = driver_items_back.split(";")
+        total = ''
+        for i_item in driver_items_back:
+            if i_item:
+                items = i_item.split(",")
+                if items[0] == scn.Aovs_driver:
+                    scn.Aovs_driver = str(int(items[0])-1)
+                    i_item = ''
+                else:
+                    i_item = i_item + ';'    
+                total = total + i_item   
+        scn.Avos_driver_list = total 
+        return {'FINISHED'} 
+     
 class ARNOLD_RP_render(bpy.types.Panel):
     bl_label = ""
     bl_space_type  = 'PROPERTIES'
@@ -165,7 +184,7 @@ class ARNOLD_RP_render(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         row = layout.row()
-        row.operator("arnold.button", text="Render",icon="RENDER_STILL")
+        row.operator("arnold.render", text="Render",icon="RENDER_STILL")
         
 class ARNOLD_tab_render(bpy.types.Panel):
     bl_label = ""
@@ -182,8 +201,7 @@ class ARNOLD_tab_render(bpy.types.Panel):
     def draw(self, context):      
         layout = self.layout
         scn = context.scene.arnold
-        layout.prop(scn,'ArnoldEnum',expand=True)
-        #arnold_menu = context.scene.ArnoldEnum       
+        layout.prop(scn,'ArnoldEnum',expand=True)      
 
 class ARNOLD_main_sampling(bpy.types.Panel):
     bl_label = "Sampling"
@@ -667,11 +685,15 @@ class ARNOLD_avos_setup(bpy.types.Panel):
         row = layout.row()
         row.operator('aovs.setup', text = "Setup AOVs")  
         scn = context.scene.arnold    
-        if scn.Avos_is_setup == True:      
-            col = layout.column()
-            row = col.row()
+        if scn.Avos_is_setup == True: 
+            row = layout.row(align=True)
+            row.alignment = 'EXPAND'
             row.prop(scn, 'Aovs_driver')
             row.operator('aovs.newdriver', text = "", icon = "ZOOMIN")
+            if scn.Aovs_driver != '0':
+                row.operator('aovs.deldriver', text = "", icon = "ZOOMOUT")
+            col = layout.column()
+            row = col.row()
             row = col.row()
             row.prop(scn, 'Aovs_shaders_builtin')
             row.prop(scn, 'Aovs_shaders_hair')

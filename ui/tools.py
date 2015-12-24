@@ -1,5 +1,4 @@
 import bpy
-from btoa.ui import properties_render
 
 class ArnoldTools(bpy.types.Panel):
     """Creates a Panel in the TOOLS window"""
