@@ -71,8 +71,8 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         lights = Lights()
         lights.writeLights()
         # Material
-        materials = Materials(self.scene,textures)
-        materials.writeMaterials()
+##        materials = Materials(self.scene,textures)
+##        materials.writeMaterials()
         # Polymesh
         polymesh = Polymesh(scene)
         polymesh.writePolymesh()
