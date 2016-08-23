@@ -1,4 +1,4 @@
-﻿# btoa
+# btoa
 Blender to Arnold export plugin
 安装说明：
 1、这个项目中已经包括Arnold SDK文件，具体文件夹为bin,doc,include,lib,license,python，如果想要升级Arnold引擎，请自行更新以上文件夹，或者等待此处升级。
