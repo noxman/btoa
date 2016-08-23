@@ -13,4 +13,4 @@ Blender to Arnold export plugin
 
 软件截图如下：
 
-<img src="/noxman/btoa/master/screenshot/arnold_screen_01.png">
+<img src="https://raw.githubusercontent.com/noxman/btoa/master/screenshot/arnold_screen_01.png">
