@@ -1,6 +1,4 @@
 *.pyc
-
+bin/ai.dll
 # python temp paths
 __pycache__/
-
-
