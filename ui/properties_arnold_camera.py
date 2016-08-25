@@ -14,34 +14,34 @@ class Arnold_camera_lens(cc.CameraButtonsPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        acam = context.camera
-        layout.prop(acam, "Camera_type", expand=True)
+        acam = context.camera.arnold
+        layout.prop(acam, "camera_type", expand=True)
         split = layout.split()
 
         col = split.column()
-        col.prop(acam, "angle")
+        col.prop(acam, "camera_angle")
         col = split.column()
-        col.prop(acam, "lens")
+        col.prop(acam, "camera_lens")
 
 
         split = layout.split()
 
         col = split.column(align=True)
         col.label(text="Clipping:")
-        col.prop(acam, "clip_start", text="Start")
-        col.prop(acam, "clip_end", text="End")
+        col.prop(acam, "camera_clip_start", text="Start")
+        col.prop(acam, "camera_clip_end", text="End")
 
         col = split.column(align=True)
         col.label(text="Scale:")
-        col.prop(acam, "Camera_scale")
+        col.prop(acam, "camera_scale")
 
-        layout.prop(acam, "Camera_exposure")
+        layout.prop(acam, "camera_exposure")
 
         split = layout.split()
 
         col = split.column(align=True)
-        layout.prop(acam, "Camera_rollingshutter")
-        layout.prop(acam, "Camera_rollingshutterduration")
+        layout.prop(acam, "camera_rollingshutter")
+        layout.prop(acam, "damera_rollingshutterduration")
 
 class Arnold_camera_dof(cc.CameraButtonsPanel, bpy.types.Panel):
     bl_label = "Depth of Field"

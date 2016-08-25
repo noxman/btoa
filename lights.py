@@ -15,15 +15,15 @@ class Lights:
         for li in bpy.data.lamps:
             if li.users !=0:
                 blight = BaseLight(li)
-                if li.atype == '0':
+                if li.arnold.lamp_atype == '0':
                     blight.alight = AiNode("point_light")
-                elif li.atype == '1':
+                elif li.arnold.lamp_atype == '1':
                     blight.alight = AiNode("spot_light")
-                elif li.atype == '2':
+                elif li.arnold.lamp_atype == '2':
                     blight.alight = AiNode("distant_light")
-                elif li.atype == '3':
+                elif li.arnold.lamp_atype == '3':
                     blight.alight = AiNode("quad_light")
-                elif li.atype == '4':
+                elif li.arnold.lamp_atype == '4':
                     blight.alight = AiNode("photometric_light")
 
                 AiNodeSetStr(blight.alight,"name",blight.lightdata.name)
@@ -43,12 +43,12 @@ class BaseLight():
         self.alight = None
 
     def write(self):
-        ld = self.lightdata
+        ld = self.lightdata.arnold
         # intensity and color
         AiNodeSetStr(self.alight,"name",ld.name)
-        AiNodeSetFlt(self.alight,"intensity",ld.energy)
+        AiNodeSetFlt(self.alight,"intensity",ld.lamp_intensity)
         AiNodeSetFlt(self.alight,"exposure",ld.lamp_exposure)
-        AiNodeSetRGB(self.alight,"color",ld.color.r,ld.color.g,ld.color.b)
+        AiNodeSetRGB(self.alight,"color",ld.lamp_color.r,ld.lamp_color.g,ld.lamp_color.b)
 
 ##        AiNodeSetBool(self.alight,b"mis",bl.mis)
 ##        # bounces

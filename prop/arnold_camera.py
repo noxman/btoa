@@ -3,6 +3,7 @@
 #
 
 import bpy
+import math
 
 from bpy.props import (StringProperty,
                         BoolProperty,
@@ -16,19 +17,48 @@ from bpy.props import (StringProperty,
                         )
 from .classes import *
 
-bpy.types.Camera.Camera_type = EnumProperty(items=CameraType)
-bpy.types.Camera.Camera_scale = FloatProperty(
+
+class ArnoldCameraSetting(bpy.types.PropertyGroup):
+    name="ArnoldCameraSettings"
+
+    camera_type = EnumProperty(items=CameraType)
+    camera_angle = FloatProperty(
+                                name = "FOV",
+                                precision = 3,
+                                step = 1,
+                                min = math.radians(1), max = math.radians(165),
+                                subtype = "ANGLE",
+                                description = "Enter an float",default = math.radians(54.43))
+    camera_lens = FloatProperty(
+                                name = "Lens",
+                                precision = 3,
+                                step = 1,
+                                min = 1,
+                                description = "Enter an float",default = 35.0)
+    camera_clip_start = FloatProperty(
+                                name = "clip_start",
+                                precision = 3,
+                                step = 1,
+                                min = 0.001,
+                                description = "Enter an float",default = 0.1)
+    camera_clip_end = FloatProperty(
+                                name = "clip_end",
+                                precision = 3,
+                                step = 1,
+                                min = 0.001,
+                                description = "Enter an float",default = 10000.0)
+    camera_scale = FloatProperty(
                                 name = "Scale",
                                 precision = 3,
                                 step = 1,
                                 description = "Enter an float",default = 1.0)
-bpy.types.Camera.Camera_exposure = FloatProperty(
+    camera_exposure = FloatProperty(
                                 name = "Exposure",
                                 precision = 3,
                                 step = 1,
                                 description = "Enter an float",default = 0.000)
-bpy.types.Camera.Camera_rollingshutter = EnumProperty(items = RollingShutter, default = "0", name = "Rolling Shutter")
-bpy.types.Camera.Camera_rollingshutterduration = FloatProperty(
+    camera_rollingshutter = EnumProperty(items = RollingShutter, default = "0", name = "Rolling Shutter")
+    camera_rollingshutterduration = FloatProperty(
                                 name = "Rolling Shutter Duration",
                                 precision = 3,
                                 min = 0, max = 1,

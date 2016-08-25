@@ -15,8 +15,21 @@ from bpy.props import (StringProperty,
                         BoolVectorProperty
                         )
 from .classes import *
-bpy.types.Lamp.atype = EnumProperty(items=LampType)
-bpy.types.Lamp.lamp_exposure = FloatProperty(
+
+class ArnoldLampSetting(bpy.types.PropertyGroup):
+    name="ArnoldLampSettings"
+
+    lamp_atype = EnumProperty(items=LampType)
+    lamp_color = FloatVectorProperty(name="color",
+                                subtype='COLOR',
+                                min=0.0, max=1.0,
+                                default=[1.0,1.0,1.0])
+    lamp_intensity = FloatProperty(
+                                name = "Intensity",
+                                precision = 3,
+                                step = 1,
+                                description = "Enter an float",default = 1)
+    lamp_exposure = FloatProperty(
                                 name = "Exposure",
                                 precision = 3,
                                 step = 1,

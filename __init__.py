@@ -23,10 +23,16 @@ from bpy.props import (
 def register():
     bpy.utils.register_module(__name__)
     bpy.types.Scene.arnold = PointerProperty(type = prop.arnold_scene.ArnoldSceneSetting)
+    bpy.types.Lamp.arnold = PointerProperty(type = prop.arnold_lamp.ArnoldLampSetting)
+    bpy.types.Camera.arnold = PointerProperty(type = prop.arnold_camera.ArnoldCameraSetting)
+    bpy.types.Material.arnold = PointerProperty(type = prop.arnold_material.ArnoldMaterialSetting)
 
 def unregister():
     bpy.utils.unregister_module(__name__)
     del bpy.types.Scene.arnold
+    del bpy.types.Lamp.arnold
+    del bpy.types.Camera.arnold
+    del bpy.types.Material.arnold
 
 if __name__ == "__main__":
     register()

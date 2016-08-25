@@ -3,8 +3,6 @@
 #
 
 import bpy
-from bpy.types import (PropertyGroup,
-                        )
 from bpy.props import (StringProperty,
                         BoolProperty,
                         IntProperty,
@@ -15,18 +13,31 @@ from bpy.props import (StringProperty,
                         FloatVectorProperty,
                         BoolVectorProperty
                         )
-from .classes import (PanelGroups,
-                        FilterTypes,
-                        FilterDomain,
-                        MotionblurPositon,
-                        RenderBucketscanning,
-                        RenderDisplaybucket,
-                        LogVerbositylevel,
-                        AovsDriverType
-                        )
-from ..ui.properties_arnold_aovs import Aovs_new_driver
+from .classes import *
 
+class ArnoldMaterialSetting(bpy.types.PropertyGroup):
+    name="ArnoldMaterialSettings"
 
+    diffuse_color = FloatVectorProperty(name="color",
+                                subtype='COLOR',
+                                min=0.0, max=1.0,
+                                default=[0.8,0.8,0.8])
+    lamp_color = FloatVectorProperty(name="color",
+                                subtype='COLOR',
+                                min=0.0, max=1.0,
+                                default=[1.0,1.0,1.0])
+    diffuse_weight = FloatProperty(
+                                name = "Weight",
+                                precision = 3,
+                                step = 1,
+                                min = 0, max = 1,
+                                description = "Enter an float",default = 0.7)
+    diffuse_roughness = FloatProperty(
+                                name = "Roughness",
+                                precision = 3,
+                                step = 1,
+                                min = 0, max = 1,
+                                description = "Enter an float",default = 0)
 
 ##def register():
 ##    bpy.utils.register_module(__name__)

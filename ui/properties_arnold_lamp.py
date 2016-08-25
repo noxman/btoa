@@ -14,15 +14,15 @@ class Arnold_lamp_lamp(cc.DataButtonsPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        alamp = context.lamp
+        alamp = context.lamp.arnold
 
-        layout.prop(alamp, "atype", expand=True)
+        layout.prop(alamp, "lamp_atype", expand=True)
         split = layout.split()
 
         col1 = split.column()
         col2 = split.column()
-        col1.prop(alamp, "color", text="Color")
-        col1.prop(alamp, "energy", text="Intensity")
+        col1.prop(alamp, "lamp_color", text="Color")
+        col1.prop(alamp, "lamp_intensity", text="Intensity")
         col1.prop(alamp, "lamp_exposure", text="Exposure")
 
 

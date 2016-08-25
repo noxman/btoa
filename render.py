@@ -5,7 +5,7 @@ from .options import *
 from .polymesh import *
 from .camera import *
 from .lights import *
-from .material import *
+##from .material import *
 
 class ArnoldRenderEngine(bpy.types.RenderEngine):
     # These three members are used by blender to set up the

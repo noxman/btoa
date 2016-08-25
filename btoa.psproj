@@ -46,93 +46,108 @@ Count=6
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1]
 ClassName=TProjectFolderNode
-Name=ui
+Name=shaders
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node0]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]ui\__init__.py
+FileName=$[Project-Path]shaders\__init__.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node1]
 ClassName=TProjectFileNode
+FileName=$[Project-Path]shaders\aiStandard.py
+
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes]
+Count=2
+
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2]
+ClassName=TProjectFolderNode
+Name=ui
+
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node0]
+ClassName=TProjectFileNode
+FileName=$[Project-Path]ui\__init__.py
+
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node1]
+ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\properties_arnold_aovs.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node2]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node2]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\properties_arnold_camera.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node3]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node3]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\properties_arnold_comm.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node4]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node4]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\properties_arnold_diagnostics.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node5]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node5]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\properties_arnold_lamp.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node6]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node6]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\properties_arnold_material.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node7]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node7]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\properties_arnold_override.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node8]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node8]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\properties_arnold_render.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node9]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node9]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\properties_arnold_system.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node10]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes\Node10]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]ui\tools.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node1\ChildNodes]
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2\ChildNodes]
 Count=11
-
-[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node2]
-ClassName=TProjectFileNode
-FileName=$[Project-Path]__init__.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node3]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]camera.py
+FileName=$[Project-Path]__init__.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node4]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]export.py
+FileName=$[Project-Path]camera.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node5]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]lights.py
+FileName=$[Project-Path]export.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node6]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]material.py
+FileName=$[Project-Path]lights.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node7]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]options.py
+FileName=$[Project-Path]material.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node8]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]polymesh.py
+FileName=$[Project-Path]options.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node9]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]render.py
+FileName=$[Project-Path]polymesh.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node10]
+ClassName=TProjectFileNode
+FileName=$[Project-Path]render.py
+
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node11]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]utils.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes]
-Count=11
+Count=12
 
 [Project\ChildNodes\Node0\ChildNodes]
 Count=1
