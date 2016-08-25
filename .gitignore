@@ -1,5 +1,5 @@
 *.pyc
-lib/*
+
 # python temp paths
 __pycache__/
 
