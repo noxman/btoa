@@ -46,7 +46,7 @@ class BaseLight():
         ld = self.lightdata.arnold
         # intensity and color
         AiNodeSetStr(self.alight,"name",ld.name)
-        AiNodeSetFlt(self.alight,"intensity",ld.lamp_intensity)
+        AiNodeSetFlt(self.alight,"intensity",ld.lamp_intensity*100)
         AiNodeSetFlt(self.alight,"exposure",ld.lamp_exposure)
         AiNodeSetRGB(self.alight,"color",ld.lamp_color.r,ld.lamp_color.g,ld.lamp_color.b)
 

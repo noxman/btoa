@@ -43,7 +43,7 @@ class Arnold_material_diffuse(pm.MaterialButtonsPanel,bpy.types.Panel):
         col = layout.column()
 ##        col.active = (not mat.use_shadeless)
         col.prop(mat, "diffuse_roughness")
-        col.prop(mat, "")
+##        col.prop(mat, "")
 
 ##def register():
 ##    bpy.utils.register_module(__name__)

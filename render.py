@@ -5,7 +5,7 @@ from .options import *
 from .polymesh import *
 from .camera import *
 from .lights import *
-##from .material import *
+from .material import *
 
 class ArnoldRenderEngine(bpy.types.RenderEngine):
     # These three members are used by blender to set up the
@@ -71,17 +71,17 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         lights = Lights()
         lights.writeLights()
         # Material
-##        materials = Materials(self.scene,textures)
-##        materials.writeMaterials()
+        materials = Materials(scene)
+        shader_node = materials.writeMaterials()
         # Polymesh
-        polymesh = Polymesh(scene)
+        polymesh = Polymesh(scene,shader_node)
         polymesh.writePolymesh()
 
 ##        AiMsgSetConsoleFlags(AI_LOG_ALL);
         # and render your first frame.
         BtoABuckets = {}
         AiRender(AI_RENDER_MODE_CAMERA)
-##        AiASSWrite("D:\\arnold_work\\file.ass", AI_NODE_ALL, False, False)
+        AiASSWrite("D:\\arnold_work\\file.ass", AI_NODE_ALL, False, False)
         BtoABuckets = {}
         AiEnd()
 

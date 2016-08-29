@@ -12,8 +12,9 @@ for member in dir(properties_data_mesh):
 del properties_data_mesh
 
 class Polymesh:
-    def __init__(self,scene):
+    def __init__(self,scene,shader_node):
         self.scene = scene
+        self.shader_node = shader_node
 
     def writePolymesh(self):
         for pm in self.scene.objects:
@@ -75,3 +76,6 @@ class Polymesh:
                 matrix = utils.getYUpMatrix(mmatrix)
                 AiArraySetMtx(matrices,0,matrix)
                 AiNodeSetArray(self.amesh,'matrix',matrices)
+
+                # write shader
+                AiNodeSetPtr(self.amesh,"shader",self.shader_node)
