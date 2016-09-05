@@ -6,6 +6,7 @@ from .polymesh import *
 from .camera import *
 from .lights import *
 from .material import *
+from .curves import *
 
 class ArnoldRenderEngine(bpy.types.RenderEngine):
     # These three members are used by blender to set up the
@@ -76,6 +77,9 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         # Polymesh
         polymesh = Polymesh(scene,shader_node)
         polymesh.writePolymesh()
+        # Curves
+        curves = Curves(scene,shader_node)
+        curves.writeCurves()
 
 ##        AiMsgSetConsoleFlags(AI_LOG_ALL);
         # and render your first frame.

@@ -18,14 +18,33 @@ class Polymesh:
 
     def writePolymesh(self):
         for pm in self.scene.objects:
+            subsurf = False
             if pm.hide_render == False and pm.type == "MESH":
+                if len(pm.modifiers) > 0:
+                    for mod in pm.modifiers:
+                        if mod.type == "SUBSURF" and mod.show_render:
+                            subsurf = mod
+                            try:
+                                subsurf.show_render = False
+                            except:
+                                pass
+                    pm_data = pm.to_mesh(self.scene,True,'RENDER',True)
+                else:
+                    pm_data = pm.data
+
                 # create the node
                 self.amesh = AiNode("polymesh")
                 AiNodeSetStr(self.amesh,"name",pm.name)
 
                 # create shorthand variables
-                faces = pm.data.polygons
-                vertices = pm.data.vertices
+                faces = pm_data.polygons
+                smooth_count = 0
+                for face in faces:
+                    if face.use_smooth == True:
+                        smooth_count += 1
+                if smooth_count == len(faces):
+                    AiNodeSetBool(self.amesh,"smoothing",True)
+                vertices = pm_data.vertices
                 numFaces = len(faces)
                 numVerts = len(vertices)
 
@@ -57,8 +76,8 @@ class Polymesh:
                 AiNodeSetArray(self.amesh,"vlist",vlist)
 
                 # uvs
-                if len(pm.data.uv_textures) > 0:
-                    uvset = pm.data.uv_textures[0]
+                if len(pm_data.uv_textures) > 0:
+                    uvset = pm_data.uv_textures[0]
                     numuv = len(uvset.data[0].uv)
                     uvidxs = AiArrayAllocate(numuv,1,AI_TYPE_UINT)
                     uvlist = AiArrayAllocate(numuv,1,AI_TYPE_POINT2)
@@ -71,11 +90,18 @@ class Polymesh:
                 # write the matrix
                 matrices = AiArrayAllocate(1, 1, AI_TYPE_MATRIX);
                 mmatrix = pm.matrix_world.copy()
-##                mmatrix = pm.matrix_world.copy().identity()
-##                #tmatrix = mmatrix.transposed()
                 matrix = utils.getYUpMatrix(mmatrix)
                 AiArraySetMtx(matrices,0,matrix)
                 AiNodeSetArray(self.amesh,'matrix',matrices)
 
                 # write shader
                 AiNodeSetPtr(self.amesh,"shader",self.shader_node)
+
+                # Sub surface
+                if subsurf != False:
+                    AiNodeSetInt(self.amesh,"subdiv_type",1)
+                    AiNodeSetInt(self.amesh,"subdiv_iterations",subsurf.render_levels)
+                    subsurf.show_render = True
+
+                #remove apply mesh
+##                bpy.data.meshes.remove(pm_data)
