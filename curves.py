@@ -26,7 +26,7 @@ class Curves:
                             if spline.type == 'BEZIER':
                                 cvCounter += 1
                                 numPoints = len(spline.bezier_points)
-                                ptCounter = numPoints *3 -2
+                                ptCounter += numPoints *3 -2
 
                         # set number of points
                         num_points = AiArrayAllocate(cvCounter,1,AI_TYPE_UINT)

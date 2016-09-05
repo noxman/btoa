@@ -2,3 +2,4 @@ bin/ai.dll
 *.pyc
 # python temp paths
 __pycache__/
+bin/ai.dll
