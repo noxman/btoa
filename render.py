@@ -74,13 +74,12 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         # Material
         materials = Materials(scene)
         shader_node = materials.writeMaterials()
-        # Polymesh
-        polymesh = Polymesh(scene,shader_node)
-        polymesh.writePolymesh()
         # Curves
         curves = Curves(scene,shader_node)
         curves.writeCurves()
-
+        # Polymesh
+        polymesh = Polymesh(scene,shader_node)
+        polymesh.writePolymesh()
 ##        AiMsgSetConsoleFlags(AI_LOG_ALL);
         # and render your first frame.
         BtoABuckets = {}

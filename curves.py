@@ -9,7 +9,6 @@ class Curves:
 
     def writeCurves(self):
         for pm in self.scene.objects:
-##            subsurf = False
             if pm.hide_render == False and pm.type == "CURVE":
                 if len(pm.modifiers) == 0:
                     numCurves = len(pm.data.splines)
@@ -27,7 +26,6 @@ class Curves:
                                 cvCounter += 1
                                 numPoints = len(spline.bezier_points)
                                 ptCounter += numPoints *3 -2
-
                         # set number of points
                         num_points = AiArrayAllocate(cvCounter,1,AI_TYPE_UINT)
                         points = AiArrayAllocate(ptCounter,1,AI_TYPE_POINT)
@@ -95,10 +93,7 @@ class Curves:
 ##                    AiNodeSetArray(self.amesh,"uvidxs",uvidxs)
 ##                    AiNodeSetArray(self.amesh,"uvlist",uvlist)
 ##
-
-##
                         # write shader
                         AiNodeSetPtr(curves,"shader",self.shader_node)
-##
-##                #remove apply mesh
-####                bpy.data.meshes.remove(pm_data)
+
+##                if len(pm.modifiers) > 0:

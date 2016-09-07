@@ -120,34 +120,38 @@ FileName=$[Project-Path]camera.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node5]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]export.py
+FileName=$[Project-Path]curves.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node6]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]lights.py
+FileName=$[Project-Path]export.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node7]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]material.py
+FileName=$[Project-Path]lights.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node8]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]options.py
+FileName=$[Project-Path]material.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node9]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]polymesh.py
+FileName=$[Project-Path]options.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node10]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]render.py
+FileName=$[Project-Path]polymesh.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node11]
+ClassName=TProjectFileNode
+FileName=$[Project-Path]render.py
+
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node12]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]utils.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes]
-Count=12
+Count=13
 
 [Project\ChildNodes\Node0\ChildNodes]
 Count=1
