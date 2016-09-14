@@ -1,5 +1,6 @@
 import bpy
 import ctypes
+import re
 from .python.arnold import *
 from .options import *
 from .polymesh import *
@@ -28,6 +29,8 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
 
         if scene.name == 'preview':
             self.render_preview(scene)
+        elif scene.name == 'final':
+            self.render_scene(scene)
         else:
             self.render_scene(scene)
 
@@ -48,11 +51,18 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
     # In this example, we fill the full renders with a flat blue color.
     def render_scene(self, scene):
         global BtoABuckets
+        global mem_peak
         self.scene = scene
 
+        mem_peak = []
         # begin, load first frame, and render it.
         AiBegin()
-
+        # message callback
+        AiMsgSetConsoleFlags(AI_LOG_ALL)
+        AiMsgSetCallback(self.messagecallback)
+##        temp_dir = bpy.app.tempdir + 'progress.log'
+##        AiMsgSetLogFileName("D:/log.log")
+##        AiMsgSetLogFileFlags(AI_LOG_ALL)
         # Filter
         filter = AiNode("gaussian_filter")
         AiNodeSetStr(filter,"name","outfilter")
@@ -80,7 +90,6 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         # Polymesh
         polymesh = Polymesh(scene,shader_node)
         polymesh.writePolymesh()
-##        AiMsgSetConsoleFlags(AI_LOG_ALL);
         # and render your first frame.
         BtoABuckets = {}
         AiRender(AI_RENDER_MODE_CAMERA)
@@ -88,11 +97,31 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         BtoABuckets = {}
         AiEnd()
 
+    def ArnoldMessageCallback(logMask, severity, msg, tabs):
+        global BtoARend
+        global mem_peak
+        self = BtoARend
+
+        amsg = msg.value.decode()
+        mem_use = float((AiMsgUtilGetUsedMemory()/1024/1024))
+        mem_use= round(mem_use, 2)
+        mem_peak.append(mem_use)
+
+        self.update_memory_stats(mem_use, max(mem_peak))
+        self.update_stats('Mem:'+ str(mem_use),'Peak:' + str(max(mem_peak)))
+
+        amsg_progress = re.search('(.*)% done - (.*) rays/pixel', amsg)
+        if amsg_progress:
+            progress_percent = int(amsg[:3])/100
+            self.update_progress(progress_percent)
+    messagecallback = AtMsgCallBack(ArnoldMessageCallback)
+
     def ArnoldDisplayCallback(x, y, width, height, buffer, data):
         global BtoARend
         global BtoABuckets
 
         self = BtoARend
+
         result = self.begin_result(x,
                                    self.size_y - y - height,
                                    width,height)
@@ -150,4 +179,3 @@ def register():
 
 def unregister():
     bpy.utils.unregister_class(ArnoldRenderEngine)
-

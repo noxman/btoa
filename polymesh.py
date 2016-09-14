@@ -82,17 +82,17 @@ class Polymesh:
             AiArraySetPnt(vlist,i,AtPoint(vertex.x,vertex.y,vertex.z))
         AiNodeSetArray(self.amesh,"vlist",vlist)
 
-        # uvs
-        if len(self.data.uv_textures) > 0:
-            uvset = self.data.uv_textures[0]
-            numuv = len(uvset.data[0].uv)
-            uvidxs = AiArrayAllocate(numuv,1,AI_TYPE_UINT)
-            uvlist = AiArrayAllocate(numuv,1,AI_TYPE_POINT2)
-            for i in range(numuv):
-                AiArraySetUInt(uvidxs,i,i)
-                AiArraySetPnt2(uvlist,i,AtPoint2(uvset.data[0].uv[i][0],uvset.data[0].uv[i][1]))
-            AiNodeSetArray(self.amesh,"uvidxs",uvidxs)
-            AiNodeSetArray(self.amesh,"uvlist",uvlist)
+##        # uvs
+##        if len(self.data.uv_textures) > 0:
+##            uvset = self.data.uv_textures[0]
+##            numuv = len(uvset.data[0].uv)
+##            uvidxs = AiArrayAllocate(numuv,1,AI_TYPE_UINT)
+##            uvlist = AiArrayAllocate(numuv,1,AI_TYPE_POINT2)
+##            for i in range(numuv):
+##                AiArraySetUInt(uvidxs,i,i)
+##                AiArraySetPnt2(uvlist,i,AtPoint2(uvset.data[0].uv[i][0],uvset.data[0].uv[i][1]))
+##            AiNodeSetArray(self.amesh,"uvidxs",uvidxs)
+##            AiNodeSetArray(self.amesh,"uvlist",uvlist)
 
         # write the matrix
         matrices = AiArrayAllocate(1, 1, AI_TYPE_MATRIX);
