@@ -16,10 +16,16 @@ class Polymesh:
         self.scene = scene
         self.shader_node = shader_node
 
+    def object_on_visible_layer(self, obj):
+        obj_visible = False
+        for layer_visible in [object_layers and scene_layers for object_layers, scene_layers in zip(obj.layers, self.scene.layers)]:
+            obj_visible |= layer_visible
+        return obj_visible
+
     def writePolymesh(self):
         for pm in self.scene.objects:
             subsurf = False
-            if pm.hide_render == False and pm.type == "MESH":
+            if pm.hide_render == False and pm.type == "MESH" and self.object_on_visible_layer(pm):
                 if len(pm.modifiers) > 0:
                     for mod in pm.modifiers:
                         if mod.type == "SUBSURF" and mod.show_render:

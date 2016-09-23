@@ -6,6 +6,7 @@ from . import arnold_scene
 from . import arnold_camera
 from . import arnold_lamp
 from . import arnold_material
+from . import arnold_curve
 
 def register():
     bpy.utils.register_module(__name__)

@@ -26,6 +26,7 @@ def register():
     bpy.types.Lamp.arnold = PointerProperty(type = prop.arnold_lamp.ArnoldLampSetting)
     bpy.types.Camera.arnold = PointerProperty(type = prop.arnold_camera.ArnoldCameraSetting)
     bpy.types.Material.arnold = PointerProperty(type = prop.arnold_material.ArnoldMaterialSetting)
+    bpy.types.Curve.arnold = PointerProperty(type = prop.arnold_curve.ArnoldCurveSetting)
 
 def unregister():
     bpy.utils.unregister_module(__name__)
@@ -33,6 +34,7 @@ def unregister():
     del bpy.types.Lamp.arnold
     del bpy.types.Camera.arnold
     del bpy.types.Material.arnold
+    del bpy.types.Curve.arnold
 
 if __name__ == "__main__":
     register()

@@ -20,4 +20,4 @@ class Options:
         AiNodeSetStr(self.options,"name","options")
         AiNodeSetInt(self.options,"xres",self.render.size_x)
         AiNodeSetInt(self.options,"yres",self.render.size_y)
-        AiNodeSetInt(self.options, "GI_diffuse_depth", 4);
+        AiNodeSetInt(self.options, "GI_diffuse_depth", 4)

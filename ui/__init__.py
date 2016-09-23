@@ -12,6 +12,7 @@ from . import properties_arnold_override
 from . import properties_arnold_camera
 from . import properties_arnold_lamp
 from . import properties_arnold_material
+from . import properties_arnold_curve
 
 def register():
     bpy.utils.register_module(__name__)
