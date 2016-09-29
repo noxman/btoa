@@ -90,3 +90,16 @@ LampType = [("0","Point",""),
                     ("3","Area",""),
                     ("4","Photometric",""),
                     ]
+
+# World
+SkyType = [("0","Sky",""),
+                    ("1","Physical_sky",""),
+                    ]
+SkyValueType = [("0","constant",""),
+                    ("1","texture",""),
+                    ("2","link",""),
+                    ]   
+SkyFormat = [("0","mirrored_ball",""),
+                    ("1","angular",""),
+                    ("2","latlong",""),
+                    ]

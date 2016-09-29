@@ -4,15 +4,15 @@
 
 import bpy
 from bpy.props import (StringProperty,
-                        BoolProperty,
-                        IntProperty,
-                        FloatProperty,
-                        FloatVectorProperty,
-                        EnumProperty,
-                        PointerProperty,
-                        FloatVectorProperty,
-                        BoolVectorProperty
-                        )
+                       BoolProperty,
+                       IntProperty,
+                       FloatProperty,
+                       EnumProperty,
+                       PointerProperty,
+                       IntVectorProperty,
+                       FloatVectorProperty,
+                       BoolVectorProperty
+                       )
 from .classes import *
 
 def update_preview(self, context):

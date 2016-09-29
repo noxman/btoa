@@ -20,11 +20,12 @@ class Materials:
 ##        outmat = None
 ##        currentMaterial = mat.arnold.loadedMaterials[mat.arnold.shaderType]
         self.mat = mat
-        st = self.mat.arnold
-        outmat = AiNode("standard")
+        if self.mat:
+            st = self.mat.arnold
+            outmat = AiNode("standard")
 
-        AiNodeSetStr(outmat,"name",self.mat.name)
-        AiNodeSetRGB(outmat,"Kd_color",st.diffuse_color.r,
-                                          st.diffuse_color.g,
-                                          st.diffuse_color.b)
-        return outmat
+            AiNodeSetStr(outmat,"name",self.mat.name)
+            AiNodeSetRGB(outmat,"Kd_color",st.diffuse_color.r,
+                                              st.diffuse_color.g,
+                                              st.diffuse_color.b)
+            return outmat

@@ -187,6 +187,7 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         if mat.preview_render_type == 'SPHERE':
             # sphere
             sp = AiNode("sphere")
+            AiNodeSetStr(sp,"name","sphere")
             AiNodeSetPnt(sp,"center",0,0,0)
             AiNodeSetFlt(sp,"radius",1)
             AiNodeSetPtr(sp,"shader",shader_node)
@@ -234,33 +235,41 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
             # hair
             ha = AiNode("curves")
             AiNodeSetStr(ha,"name","hair")
-            num_points = AiArrayAllocate(48,1,AI_TYPE_UINT)
-            points = AiArrayAllocate(192,1,AI_TYPE_POINT)
-            radius = AiArrayAllocate(6,1,AI_TYPE_FLOAT)
+            num_points = AiArrayAllocate(8,1,AI_TYPE_UINT)
+            points = AiArrayAllocate(56,1,AI_TYPE_POINT)
             ptcount = 0
-            for count in range(48):
-                AiArraySetUInt(num_points,count,4)
-                for ptidx in range(2):
+            for count in range(8):
+                AiArraySetInt(num_points,count,7)
+                for ptidx in range(7):
                     AiArraySetPnt(points,ptcount,
                         AtPoint(ha_point[ptcount*3],ha_point[ptcount*3+1],ha_point[ptcount*3+2]))
-                    ptcount += 1
-            racount = 0
-            for count in range(6):
-                AiArraySetFlt(radius,count,ha_radius[count])
-                count += 1
+                    ptcount += 1      
+    
             AiNodeSetArray(ha,"num_points",num_points)
             AiNodeSetArray(ha,"points",points)
-            AiNodeSetArray(ha,"radius",radius)
+            AiNodeSetFlt(ha,"radius",0.01)
+            AiNodeSetInt(ha,"mode",1)
             ha_m = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
             AiArraySetMtx(ha_m,0,ha_matrix)
             AiNodeSetArray(ha,"matrix",ha_m)
             AiNodeSetPtr(ha,"shader",shader_node) 
 
+        if mat.preview_render_type == 'SPHERE_A':
+            # sphere_a
+            sp_a = AiNode("sphere")
+            AiNodeSetStr(sp_a,"name","sphere_a")
+            AiNodeSetPnt(sp_a,"center",0,0,0)
+            AiNodeSetFlt(sp_a,"radius",1)
+            sphere_aMat = AiNode("standard")
+            AiNodeSetStr(sphere_aMat,"name","sphere_aMat")
+            AiNodeSetRGB(sphere_aMat,"Kd_color",0.6,0.6,0.6) 
+            AiNodeSetPtr(sp_a,"shader",sphere_aMat) 
+
         BtoABuckets = {}
         #res = AiRender(AI_RENDER_MODE_CAMERA)
         self.__DoProgressiveRender()
         # AiRender(AI_RENDER_MODE_CAMERA)
-        # AiASSWrite("D:\\arnold_work\\file.ass", AI_NODE_ALL, False, False)
+        AiASSWrite("D:\\arnold_work\\file.ass", AI_NODE_ALL, False, False)
         BtoABuckets = {}
         AiEnd()
 
@@ -405,7 +414,7 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
             samples.append(smax)
         res = AI_SUCCESS
         for i in samples:
-            AiNodeSetInt(options,b"AA_samples", i)
+            AiNodeSetInt(options,"AA_samples", i)
             res = AiRender(AI_RENDER_MODE_CAMERA)
 
             #self.renderFinished.emit(self.renderInterrupted)
@@ -414,7 +423,7 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
             #    break
 
         # Make sure the original values are restored in case of render interruption
-        AiNodeSetInt(options,b"AA_samples", sampleLevel)
+        AiNodeSetInt(options,"AA_samples", sampleLevel)
 
         return res
 # Register the RenderEngine

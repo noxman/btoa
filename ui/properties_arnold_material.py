@@ -2,7 +2,6 @@
 # arnold For Blender
 #
 import bpy
-from bpy.types import Panel
 from bl_ui.properties_material import (MaterialButtonsPanel,
                                        active_node_mat,
                                        check_material)
@@ -26,7 +25,7 @@ class Arnold_MaterialTypePanel(MaterialButtonsPanel):
         return check_material(arnold_mat) and  (engine in cls.COMPAT_ENGINES)
         # return check_material(arnold_mat) and (arnold_mat.mat_type in cls.material_type) and (engine in cls.COMPAT_ENGINES)
 
-class Arnold_PT_context_material(MaterialButtonsPanel,Panel):
+class Arnold_PT_context_material(MaterialButtonsPanel,bpy.types.Panel):
     bl_label = ""
     bl_options = {'HIDE_HEADER'}
     COMPAT_ENGINES = {'arnold_renderer'}
@@ -91,7 +90,7 @@ def active_node_mat(mat):
             return mat
     return None
 
-class Arnold_material_diffuse(Arnold_MaterialTypePanel,Panel):
+class Arnold_material_diffuse(Arnold_MaterialTypePanel,bpy.types.Panel):
     bl_label = "Diffuse"
     COMPAT_ENGINES = {'arnold_renderer'}
     def draw(self, context):

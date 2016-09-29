@@ -6,15 +6,15 @@ import bpy
 from bpy.types import (PropertyGroup,
                         )
 from bpy.props import (StringProperty,
-                        BoolProperty,
-                        IntProperty,
-                        FloatProperty,
-                        FloatVectorProperty,
-                        EnumProperty,
-                        PointerProperty,
-                        FloatVectorProperty,
-                        BoolVectorProperty
-                        )
+                       BoolProperty,
+                       IntProperty,
+                       FloatProperty,
+                       EnumProperty,
+                       PointerProperty,
+                       IntVectorProperty,
+                       FloatVectorProperty,
+                       BoolVectorProperty
+                       )
 from .classes import (PanelGroups,
                         FilterTypes,
                         FilterDomain,

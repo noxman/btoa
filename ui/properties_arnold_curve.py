@@ -1,25 +1,33 @@
+#
+# arnold For Blender
+#
 import bpy
-from .python.arnold import *
-from bpy.types import Panel
-from rna_prop_ui import PropertyPanel
 
-from bpy.types import Curve, SurfaceCurve, TextCurve
+# from bpy.types import Curve, SurfaceCurve, TextCurve
+from bl_ui import properties_data_curve
+cc = properties_data_curve
 
-class CurveButtonsPanelCurve(CurveButtonsPanel):
-    @classmethod
-    def poll(cls, context):
-        return (type(context.curve) is Curve)
+# class CurveButtonsPanelCurve(CurveButtonsPanel):
+#     @classmethod
+#     def poll(cls, context):
+#         return (type(context.curve) is Curve)
 
-class Arnold_curve(CurveButtonsPanel, Panel):
+class Arnold_curve_render(cc.CurveButtonsPanel, bpy.types.Panel):
     bl_label = "Arnold Curve"
     bl_options = {'DEFAULT_CLOSED'}
     COMPAT_ENGINES = {'arnold_renderer'}
 
     def draw(self, context):
-    	layout = self.layout
-        scn = context.curve.arnold
-        row = layout.row()
-        row.prop(scn, 'curve_render')
+        layout = self.layout
+
+        curve = context.curve.arnold
+        layout.prop(curve,'curve_render')
+        if curve.curve_render == True:
+            row = layout.row()
+            row.prop(curve,'curve_width')
+            row.prop(curve,'curve_scale')
+            if curve.curve_scale == True:
+                layout.template_curve_mapping(curve, "curve_scale")
     # settings = self.paint_settings(context)
 
     # brush = settings.brush
