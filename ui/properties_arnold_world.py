@@ -38,8 +38,8 @@ class Arnold_PT_world_sky(cc.WorldButtonsPanel, bpy.types.Panel):
         sky_type = context.world.arnold.sky_type
         arnold_sky = context.world.arnold.arnold_sky
         rd = context.scene.render
-        return ((rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES) 
-        and (sky_type in cls.tabNum) and arnold_sky)
+        return ((rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES)
+                and (sky_type in cls.tabNum) and arnold_sky)
 
     def draw(self, context):
         layout = self.layout
@@ -76,7 +76,8 @@ class Arnold_PT_world_sky(cc.WorldButtonsPanel, bpy.types.Panel):
         col = split.column()
         col.prop(world, "sky_scale")
 
-class Arnold_PT_world_Physical_sky(cc.WorldButtonsPanel, bpy.types.Panel):
+
+class Arnold_PT_world_physical_sky(cc.WorldButtonsPanel, bpy.types.Panel):
     bl_label = "Physical Sky"
     COMPAT_ENGINES = {'arnold_renderer'}
     tabNum = {'1'}
@@ -86,8 +87,8 @@ class Arnold_PT_world_Physical_sky(cc.WorldButtonsPanel, bpy.types.Panel):
         sky_type = context.world.arnold.sky_type
         arnold_sky = context.world.arnold.arnold_sky
         rd = context.scene.render
-        return ((rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES) 
-        and (sky_type in cls.tabNum) and arnold_sky)
+        return ((rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES)
+                and (sky_type in cls.tabNum) and arnold_sky)
 
     def draw(self, context):
         layout = self.layout
@@ -111,3 +112,68 @@ class Arnold_PT_world_Physical_sky(cc.WorldButtonsPanel, bpy.types.Panel):
         row.prop(world, "physical_sky_sun_size")
         row = layout.row()
         row.prop(world, "physical_sky_sun")
+
+
+class Arnold_PT_world_skydome_light(cc.WorldButtonsPanel, bpy.types.Panel):
+    bl_label = "Skydome Light"
+    COMPAT_ENGINES = {'arnold_renderer'}
+
+    @classmethod
+    def poll(cls, context):
+        sky_type = context.world.arnold.sky_type
+        arnold_sky = context.world.arnold.arnold_sky
+        rd = context.scene.render
+        return ((rd.use_game_engine is False) and (rd.engine in cls.COMPAT_ENGINES)
+                and arnold_sky)
+
+    def draw(self, context):
+        layout = self.layout
+        world = context.world.arnold
+
+        row = layout.row()
+        row.prop(world, "skydome_enable")
+        if world.skydome_enable:
+            row = layout.row()
+            row.prop(world, "skydome_follow_sky_color")
+            if not world.skydome_follow_sky_color:
+                row = layout.row()
+                row.prop(world, "skydome_color")
+            row = layout.row()
+            row.prop(world, "skydome_follow_sky_intensity")
+            if not world.skydome_follow_sky_intensity:
+                row = layout.row()
+                row.prop(world, "skydome_intensity")
+            row = layout.row()
+            row.prop(world, "skydome_exposure")
+            row = layout.row()
+            row.prop(world, "skydome_resolution")
+            row = layout.row()
+            row.prop(world, "skydome_format")
+            row = layout.row()
+            row.prop(world, "skydome_samples")
+            row = layout.row()
+            row.prop(world, "skydome_normalize")
+            row = layout.row()
+            row.prop(world, "skydome_case_shadows")
+            row = layout.row()
+            row.prop(world, "skydome_shadow_density")
+            row = layout.row()
+            row.prop(world, "skydome_shadow_color")
+            row = layout.row()
+            row.prop(world, "skydome_affect_volumetrics")
+            row = layout.row()
+            row.prop(world, "skydome_cast_volumetric_shadows")
+            row = layout.row()
+            row.prop(world, "skydome_volume_samples")
+            row = layout.row()
+            row.prop(world, "skydome_diffuse")
+            row = layout.row()
+            row.prop(world, "skydome_specular")
+            row = layout.row()
+            row.prop(world, "skydome_sss")
+            row = layout.row()
+            row.prop(world, "skydome_indirect")
+            row = layout.row()
+            row.prop(world, "skydome_volume")
+            row = layout.row()
+            row.prop(world, "skydome_max_bounces")
