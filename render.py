@@ -11,6 +11,7 @@ from .camera import *
 from .lights import *
 from .material import *
 from .curves import *
+from .world import *
 from .presets.preview import *
 
 class ArnoldRenderEngine(bpy.types.RenderEngine):
@@ -66,11 +67,12 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         scale = scene.render.resolution_percentage / 100.0
         self.size_x = int(scene.render.resolution_x * scale)
         self.size_y = int(scene.render.resolution_y * scale)
-
-        if self.is_preview:
+        
+        if self.is_preview:# and scene.name == "preview":
             self.render_preview(scene)
         elif scene.name == 'final':
-            self.render_scene(scene)
+            return
+            # self.render_scene(scene)
         else:
             self.render_scene(scene)
 
@@ -79,8 +81,8 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         global BtoARend
         global BtoABuckets
         self.scene = scene
+        
         #return
-
         AiBegin()
         # Filter
         filter = AiNode("cook_filter")
@@ -92,6 +94,7 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         AiNodeSetPtr(output,"callback",self.g_displayCallback)
 
         options = AiUniverseGetOptions()
+        self.options = options
         outStr= "%s %s %s %s"%("RGBA","RGBA","outfilter","outdriver")
         outs = AiArray(1, 1, AI_TYPE_STRING, outStr.encode('utf-8'))
         AiNodeSetArray(options,"outputs",outs)
@@ -123,147 +126,164 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         AiNodeSetFlt(cam,"fov",fov)
 
         AiNodeSetPtr(options,"camera",cam)
-        # light 1
-        li01 = AiNode("point_light")
-        AiNodeSetStr(li01,"name","li01")
-        pos = AiArrayAllocate(1,1,AI_TYPE_POINT)
-        AiArraySetPnt(pos,0,AtPoint(-4,-6,4)) 
-        AiNodeSetArray(li01,"position",pos)
-        AiNodeSetFlt(li01,"intensity",1*300)
-        AiNodeSetRGB(li01,"color",1,1,1)
-        AiNodeSetFlt(li01,"exposure",0)
-        AiNodeSetFlt(li01,"shadow_density",0.25)
-        AiNodeSetFlt(li01,"radius",1)
-        # light 2
-        li02 = AiNode("point_light")
-        AiNodeSetStr(li02,"name","li02")
-        pos = AiArrayAllocate(1,1,AI_TYPE_POINT)
-        AiArraySetPnt(pos,0,AtPoint(5,-3,2)) 
-        AiNodeSetArray(li02,"position",pos)
-        AiNodeSetFlt(li02,"intensity",1*100)
-        AiNodeSetRGB(li02,"color",0.2,0.2,0.2)
-        AiNodeSetFlt(li02,"exposure",0)
-        AiNodeSetBool(li02,"cast_shadows",False)
 
         # materials
         mat = self.find_preview_material(scene)
         materials = Materials(scene)
-        shader_node = materials.writeMaterial(mat) 
-        if mat.preview_render_type not in ['FLAT','SPHERE_A']:     
-            # wall
-            wall = AiNode("polymesh")
-            AiNodeSetStr(wall,"name","wall")
-            nsides = wall_nsides
-            AiNodeSetArray(wall,"nsides",AiArrayConvert(len(nsides),1,
-                AI_TYPE_UINT,(c_uint*len(nsides))(*nsides)))
-            vidxs = wall_vidxs
-            AiNodeSetArray(wall,"vidxs",AiArrayConvert(len(vidxs),1,
-                AI_TYPE_UINT,(c_uint*len(vidxs))(*vidxs)))
-            vlist = wall_vlist
-            AiNodeSetArray(wall,"vlist",AiArrayConvert(len(vlist),1,
-                AI_TYPE_FLOAT,(c_float*len(vlist))(*vlist)))
-            am = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
-            AiArraySetMtx(am,0,wall_matrix)
-            AiNodeSetArray(wall,"matrix",am)
-            AiNodeSetBool(wall,"smoothing",True)
-            AiNodeSetByte(wall,"visibility",255)
-            AiNodeSetInt(wall,"subdiv_type",1)
-            AiNodeSetInt(wall,"subdiv_iterations",2)
-            wallMat = AiNode("standard")
-            AiNodeSetStr(wallMat,"name","wallMat")
-            AiNodeSetRGB(wallMat,"Kd_color",0.6,0.6,0.6) 
-            AiNodeSetPtr(wall,"shader",wallMat)
+        shader_node = materials.writeMaterial(mat)
+        if mat: 
+            # light 1
+            li01 = AiNode("point_light")
+            AiNodeSetStr(li01,"name","li01")
+            pos = AiArrayAllocate(1,1,AI_TYPE_POINT)
+            AiArraySetPnt(pos,0,AtPoint(-4,-6,4)) 
+            AiNodeSetArray(li01,"position",pos)
+            AiNodeSetFlt(li01,"intensity",1*300)
+            AiNodeSetRGB(li01,"color",1,1,1)
+            AiNodeSetFlt(li01,"exposure",0)
+            AiNodeSetFlt(li01,"shadow_density",0.25)
+            AiNodeSetFlt(li01,"radius",1)
+            # light 2
+            li02 = AiNode("point_light")
+            AiNodeSetStr(li02,"name","li02")
+            pos = AiArrayAllocate(1,1,AI_TYPE_POINT)
+            AiArraySetPnt(pos,0,AtPoint(5,-3,2)) 
+            AiNodeSetArray(li02,"position",pos)
+            AiNodeSetFlt(li02,"intensity",1*100)
+            AiNodeSetRGB(li02,"color",0.2,0.2,0.2)
+            AiNodeSetFlt(li02,"exposure",0)
+            AiNodeSetBool(li02,"cast_shadows",False)
+            
+            if mat.preview_render_type not in ['FLAT','SPHERE_A']:     
+                # wall
+                wall = AiNode("polymesh")
+                AiNodeSetStr(wall,"name","wall")
+                nsides = wall_nsides
+                AiNodeSetArray(wall,"nsides",AiArrayConvert(len(nsides),1,
+                    AI_TYPE_UINT,(c_uint*len(nsides))(*nsides)))
+                vidxs = wall_vidxs
+                AiNodeSetArray(wall,"vidxs",AiArrayConvert(len(vidxs),1,
+                    AI_TYPE_UINT,(c_uint*len(vidxs))(*vidxs)))
+                vlist = wall_vlist
+                AiNodeSetArray(wall,"vlist",AiArrayConvert(len(vlist),1,
+                    AI_TYPE_FLOAT,(c_float*len(vlist))(*vlist)))
+                am = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
+                AiArraySetMtx(am,0,wall_matrix)
+                AiNodeSetArray(wall,"matrix",am)
+                AiNodeSetBool(wall,"smoothing",True)
+                AiNodeSetByte(wall,"visibility",255)
+                AiNodeSetInt(wall,"subdiv_type",1)
+                AiNodeSetInt(wall,"subdiv_iterations",2)
+                wallMat = AiNode("standard")
+                AiNodeSetStr(wallMat,"name","wallMat")
+                AiNodeSetRGB(wallMat,"Kd_color",0.6,0.6,0.6) 
+                AiNodeSetPtr(wall,"shader",wallMat)
 
-        if mat.preview_render_type == 'FLAT':
-            # plane
-            pl = AiNode("plane")
-            AiNodeSetStr(pl,"name","plane")
-            AiNodeSetVec(pl,"normal",0,0,1)
-            pl_m = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
-            AiArraySetMtx(pl_m,0,pl_matrix)
-            AiNodeSetArray(pl,"matrix",pl_m)
-            AiNodeSetPtr(pl,"shader",shader_node)
+            if mat.preview_render_type == 'FLAT':
+                # plane
+                pl = AiNode("plane")
+                AiNodeSetStr(pl,"name","plane")
+                AiNodeSetVec(pl,"normal",0,0,1)
+                pl_m = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
+                AiArraySetMtx(pl_m,0,pl_matrix)
+                AiNodeSetArray(pl,"matrix",pl_m)
+                AiNodeSetPtr(pl,"shader",shader_node)
 
-        if mat.preview_render_type == 'SPHERE':
-            # sphere
-            sp = AiNode("sphere")
-            AiNodeSetStr(sp,"name","sphere")
-            AiNodeSetPnt(sp,"center",0,0,0)
-            AiNodeSetFlt(sp,"radius",1)
-            AiNodeSetPtr(sp,"shader",shader_node)
+            if mat.preview_render_type == 'SPHERE':
+                # sphere
+                sp = AiNode("sphere")
+                AiNodeSetStr(sp,"name","sphere")
+                AiNodeSetPnt(sp,"center",0,0,0)
+                AiNodeSetFlt(sp,"radius",1)
+                AiNodeSetPtr(sp,"shader",shader_node)
 
-        if mat.preview_render_type == 'CUBE':
-            # cube
-            cu = AiNode("polymesh")
-            AiNodeSetStr(cu,"name","cube")
-            nsides = [4,4,4,4,4,4]
-            AiNodeSetArray(cu,"nsides",AiArrayConvert(len(nsides),1,
-                AI_TYPE_UINT,(c_uint*len(nsides))(*nsides)))
-            vidxs = cu_vidxs
-            AiNodeSetArray(cu,"vidxs",AiArrayConvert(len(vidxs),1,
-                AI_TYPE_UINT,(c_uint*len(vidxs))(*vidxs)))
-            vlist = cu_vlist
-            AiNodeSetArray(cu,"vlist",AiArrayConvert(len(vlist),1,
-                AI_TYPE_FLOAT,(c_float*len(vlist))(*vlist)))
-            cu_m = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
-            AiArraySetMtx(cu_m,0,cu_matrix)
-            AiNodeSetArray(cu,"matrix",cu_m)
-            AiNodeSetPtr(cu,"shader",shader_node)
+            if mat.preview_render_type == 'CUBE':
+                # cube
+                cu = AiNode("polymesh")
+                AiNodeSetStr(cu,"name","cube")
+                nsides = [4,4,4,4,4,4]
+                AiNodeSetArray(cu,"nsides",AiArrayConvert(len(nsides),1,
+                    AI_TYPE_UINT,(c_uint*len(nsides))(*nsides)))
+                vidxs = cu_vidxs
+                AiNodeSetArray(cu,"vidxs",AiArrayConvert(len(vidxs),1,
+                    AI_TYPE_UINT,(c_uint*len(vidxs))(*vidxs)))
+                vlist = cu_vlist
+                AiNodeSetArray(cu,"vlist",AiArrayConvert(len(vlist),1,
+                    AI_TYPE_FLOAT,(c_float*len(vlist))(*vlist)))
+                cu_m = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
+                AiArraySetMtx(cu_m,0,cu_matrix)
+                AiNodeSetArray(cu,"matrix",cu_m)
+                AiNodeSetPtr(cu,"shader",shader_node)
 
-        if mat.preview_render_type == 'MONKEY':
-            # monkey
-            mo = AiNode("polymesh")
-            AiNodeSetStr(mo,"name","monkey")
-            nsides = mo_nsides
-            AiNodeSetArray(mo,"nsides",AiArrayConvert(len(nsides),1,
-                AI_TYPE_UINT,(c_uint*len(nsides))(*nsides)))
-            vidxs = mo_vidxs
-            AiNodeSetArray(mo,"vidxs",AiArrayConvert(len(vidxs),1,
-                AI_TYPE_UINT,(c_uint*len(vidxs))(*vidxs)))
-            vlist = mo_vlist
-            AiNodeSetArray(mo,"vlist",AiArrayConvert(len(vlist),1,
-                AI_TYPE_FLOAT,(c_float*len(vlist))(*vlist)))
-            AiNodeSetBool(mo,"smoothing",True)
-            AiNodeSetInt(mo,"subdiv_type",1)
-            AiNodeSetInt(mo,"subdiv_iterations",2)
-            mo_m = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
-            AiArraySetMtx(mo_m,0,mo_matrix)
-            AiNodeSetArray(mo,"matrix",mo_m)
-            AiNodeSetPtr(mo,"shader",shader_node) 
+            if mat.preview_render_type == 'MONKEY':
+                # monkey
+                mo = AiNode("polymesh")
+                AiNodeSetStr(mo,"name","monkey")
+                nsides = mo_nsides
+                AiNodeSetArray(mo,"nsides",AiArrayConvert(len(nsides),1,
+                    AI_TYPE_UINT,(c_uint*len(nsides))(*nsides)))
+                vidxs = mo_vidxs
+                AiNodeSetArray(mo,"vidxs",AiArrayConvert(len(vidxs),1,
+                    AI_TYPE_UINT,(c_uint*len(vidxs))(*vidxs)))
+                vlist = mo_vlist
+                AiNodeSetArray(mo,"vlist",AiArrayConvert(len(vlist),1,
+                    AI_TYPE_FLOAT,(c_float*len(vlist))(*vlist)))
+                AiNodeSetBool(mo,"smoothing",True)
+                AiNodeSetInt(mo,"subdiv_type",1)
+                AiNodeSetInt(mo,"subdiv_iterations",2)
+                mo_m = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
+                AiArraySetMtx(mo_m,0,mo_matrix)
+                AiNodeSetArray(mo,"matrix",mo_m)
+                AiNodeSetPtr(mo,"shader",shader_node) 
 
-        if mat.preview_render_type == 'HAIR':
-            # hair
-            ha = AiNode("curves")
-            AiNodeSetStr(ha,"name","hair")
-            num_points = AiArrayAllocate(8,1,AI_TYPE_UINT)
-            points = AiArrayAllocate(56,1,AI_TYPE_POINT)
-            ptcount = 0
-            for count in range(8):
-                AiArraySetInt(num_points,count,7)
-                for ptidx in range(7):
-                    AiArraySetPnt(points,ptcount,
-                        AtPoint(ha_point[ptcount*3],ha_point[ptcount*3+1],ha_point[ptcount*3+2]))
-                    ptcount += 1      
-    
-            AiNodeSetArray(ha,"num_points",num_points)
-            AiNodeSetArray(ha,"points",points)
-            AiNodeSetFlt(ha,"radius",0.01)
-            AiNodeSetInt(ha,"mode",1)
-            ha_m = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
-            AiArraySetMtx(ha_m,0,ha_matrix)
-            AiNodeSetArray(ha,"matrix",ha_m)
-            AiNodeSetPtr(ha,"shader",shader_node) 
+            if mat.preview_render_type == 'HAIR':
+                # hair
+                ha = AiNode("curves")
+                AiNodeSetStr(ha,"name","hair")
+                num_points = AiArrayAllocate(8,1,AI_TYPE_UINT)
+                points = AiArrayAllocate(56,1,AI_TYPE_POINT)
+                ptcount = 0
+                for count in range(8):
+                    AiArraySetInt(num_points,count,7)
+                    for ptidx in range(7):
+                        AiArraySetPnt(points,ptcount,
+                            AtPoint(ha_point[ptcount*3],ha_point[ptcount*3+1],ha_point[ptcount*3+2]))
+                        ptcount += 1      
+        
+                AiNodeSetArray(ha,"num_points",num_points)
+                AiNodeSetArray(ha,"points",points)
+                AiNodeSetFlt(ha,"radius",0.01)
+                AiNodeSetInt(ha,"mode",1)
+                ha_m = AiArrayAllocate(1,1,AI_TYPE_MATRIX)
+                AiArraySetMtx(ha_m,0,ha_matrix)
+                AiNodeSetArray(ha,"matrix",ha_m)
+                AiNodeSetPtr(ha,"shader",shader_node) 
 
-        if mat.preview_render_type == 'SPHERE_A':
-            # sphere_a
-            sp_a = AiNode("sphere")
-            AiNodeSetStr(sp_a,"name","sphere_a")
-            AiNodeSetPnt(sp_a,"center",0,0,0)
-            AiNodeSetFlt(sp_a,"radius",1)
-            sphere_aMat = AiNode("standard")
-            AiNodeSetStr(sphere_aMat,"name","sphere_aMat")
-            AiNodeSetRGB(sphere_aMat,"Kd_color",0.6,0.6,0.6) 
-            AiNodeSetPtr(sp_a,"shader",sphere_aMat) 
+            if mat.preview_render_type == 'SPHERE_A':
+                # sphere_a
+                sp_a = AiNode("sphere")
+                AiNodeSetStr(sp_a,"name","sphere_a")
+                AiNodeSetPnt(sp_a,"center",0,0,0)
+                AiNodeSetFlt(sp_a,"radius",1)
+                sphere_aMat = AiNode("standard")
+                AiNodeSetStr(sphere_aMat,"name","sphere_aMat")
+                AiNodeSetRGB(sphere_aMat,"Kd_color",0.6,0.6,0.6) 
+                AiNodeSetPtr(sp_a,"shader",sphere_aMat)
+                # sphere_a_world
+                arnoldworld = AiNode("sky")
+                AiNodeSetStr(arnoldworld,"name","worl_dpreview")
+                AiNodeSetRGB(arnoldworld,"color",1,1,1)
+                AiNodeSetStr(arnoldworld,"format",'2')
+                AiNodeSetFlt(arnoldworld,"X_angle",0)
+                AiNodeSetFlt(arnoldworld,"Y_angle",0)
+                AiNodeSetFlt(arnoldworld,"Z_angle",0)
+                AiNodeSetVec(arnoldworld,"X",1,0,0)
+                AiNodeSetVec(arnoldworld,"Y",0,1,0)
+                AiNodeSetVec(arnoldworld,"Z",0,0,1)
+                AiNodeSetBool(arnoldworld,"opaque_alpha",True)
+                AiNodeSetPtr(options,"background",arnoldworld)
+        world = World(scene,options)
+        world.writeWorld()
 
         BtoABuckets = {}
         #res = AiRender(AI_RENDER_MODE_CAMERA)
@@ -295,14 +315,13 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         options = Options(self)
         options.writeOptions()
         options.setOutput("outfilter","outdriver",outType="RGBA")
-         # Display
+        # Display
         output = AiNode("driver_display")
         AiNodeSetStr(output,"name","outdriver")
         AiNodeSetPtr(output,"callback",self.g_displayCallback)
         # Camera
-        camera = Camera(self)
+        camera = Camera(self,options.options)
         camera.writeCamera()
-        options.setCamera(camera.ArnoldCamera)
         # Lights
         lights = Lights()
         lights.writeLights()
@@ -315,6 +334,9 @@ class ArnoldRenderEngine(bpy.types.RenderEngine):
         # Polymesh
         polymesh = Polymesh(scene,shader_node)
         polymesh.writePolymesh()
+        # World
+        world = World(scene,options.options)
+        world.writeWorld()
         # and render your first frame.
         BtoABuckets = {}
         AiRender(AI_RENDER_MODE_CAMERA)

@@ -21,8 +21,8 @@ class Arnold_MaterialTypePanel(MaterialButtonsPanel):
     @classmethod
     def poll(cls, context):
         arnold_mat = context.material
-        engine = context.scene.render.engine
-        return check_material(arnold_mat) and  (engine in cls.COMPAT_ENGINES)
+        rd = context.scene.render
+        return check_material(arnold_mat) and (rd.engine in cls.COMPAT_ENGINES)
         # return check_material(arnold_mat) and (arnold_mat.mat_type in cls.material_type) and (engine in cls.COMPAT_ENGINES)
 
 class Arnold_PT_context_material(MaterialButtonsPanel,bpy.types.Panel):
@@ -34,8 +34,8 @@ class Arnold_PT_context_material(MaterialButtonsPanel,bpy.types.Panel):
     def poll(cls, context):
         # An exception, dont call the parent poll func because
         # this manages materials for all engine types
-        engine = context.scene.render.engine
-        return (context.material or context.object) and (engine in cls.COMPAT_ENGINES)
+        rd = context.scene.render
+        return (context.material or context.object) and (rd.engine in cls.COMPAT_ENGINES)
 
     def draw(self, context):
         layout = self.layout

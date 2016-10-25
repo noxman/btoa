@@ -14,15 +14,18 @@ from . import utils
 ##        min=0, max=16, default=0)
 ##
 class Camera():
-    def __init__(self,render):
+    def __init__(self,render,options=None):
         self.scene  = bpy.context.scene
         self.camera = bpy.data.cameras[self.scene.camera.data.name]
         self.render = render
+        self.options = options
 
     def writeCamera(self):
 
         #create the node
         acam = AiNode("persp_camera")
+        if self.options:
+            AiNodeSetPtr(self.options,"camera",acam)
         self.name = self.camera.name
         self.ArnoldCamera = acam
         AiNodeSetStr(acam,"name",self.name)

@@ -15,7 +15,8 @@ from bpy.props import (StringProperty,
                        BoolVectorProperty
                        )
 from .classes import *
-
+def update_preview(self, context):
+    context.world.preview_render_type = context.material.preview_render_type
 
 class ArnoldWorldSetting(bpy.types.PropertyGroup):
     name = "ArnoldWorldSettings"
@@ -31,7 +32,7 @@ class ArnoldWorldSetting(bpy.types.PropertyGroup):
         min=0.0, max=1.0,
         default=[1, 1, 1])
     sky_colorvaluetype = EnumProperty(items=SkyValueType)
-    sky_format = EnumProperty(items=SkyFormat)
+    sky_format = EnumProperty(items=SkyFormat,default='2')
     sky_intensity = FloatProperty(
         name="Intensity",
         precision=3,
@@ -41,10 +42,12 @@ class ArnoldWorldSetting(bpy.types.PropertyGroup):
     sky_intensityvaluetype = EnumProperty(items=SkyValueType)
     casts_shadows = BoolProperty(
         name="Casts Shadows",
-        description="True or False?")
+        description="True or False?",
+        default=True)
     primary_visibility = BoolProperty(
         name="Primary visibility",
-        description="True or False?")
+        description="True or False?",
+        default = True)
     visible_reflections = BoolProperty(
         name="Reflections",
         description="True or False?")
@@ -115,7 +118,8 @@ class ArnoldWorldSetting(bpy.types.PropertyGroup):
         description="Enter an float", default=0.51)
     physical_sky_sun = BoolProperty(
         name="Enable Sun",
-        description="True or False?")
+        description="True or False?",
+        default = True)
 
     skydome_enable = BoolProperty(
         name="Enable",
@@ -149,7 +153,7 @@ class ArnoldWorldSetting(bpy.types.PropertyGroup):
         name="Resolution",
         step=1,
         description="Enter an float", default=1000)
-    skydome_format = EnumProperty(items=SkyFormat)
+    skydome_format = EnumProperty(items=SkyFormat,name="Format",default="2")
     skydome_samples = IntProperty(
         name="Samples",
         min=0,
@@ -186,11 +190,6 @@ class ArnoldWorldSetting(bpy.types.PropertyGroup):
         name="Cast Volumetric Shadows",
         description="True or False?",
         default = True)
-    skydome_samples = IntProperty(
-        name="Samples",
-        min=0,
-        step=1,
-        description="Enter an Int", default=1)
     skydome_volume_samples = IntProperty(
         name="Volume Samples",
         min=0,

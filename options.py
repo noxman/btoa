@@ -13,9 +13,6 @@ class Options:
         outs = AiArraySetStr(outputs_array, 0, outStr)
         AiNodeSetArray(self.options,"outputs",outputs_array)
 
-    def setCamera(self,camera):
-        AiNodeSetPtr(self.options,"camera",camera)
-
     def writeOptions(self):
         AiNodeSetStr(self.options,"name","options")
         AiNodeSetInt(self.options,"xres",self.render.size_x)

@@ -8,9 +8,20 @@ cc = properties_world
 # WorldButtonsPanel
 
 # Inherit World Preview Panel
-cc.WORLD_PT_preview.COMPAT_ENGINES.add('arnold_renderer')
-cc.WORLD_PT_context_world.COMPAT_ENGINES.add('arnold_renderer')
+class CyclesWorld_PT_preview(cc.WorldButtonsPanel, bpy.types.Panel):
+    bl_label = "Preview"
+    bl_context = "world"
+    COMPAT_ENGINES = {'arnold_renderer'}
+    # bl_options = {'DEFAULT_CLOSED'}
+    @classmethod
+    def poll(cls, context):
+        rd = context.scene.render
+        return context.world and (rd.engine in cls.COMPAT_ENGINES)
 
+    def draw(self, context):
+        self.layout.template_preview(context.world)
+
+cc.WORLD_PT_context_world.COMPAT_ENGINES.add('arnold_renderer')
 
 class Arnold_PT_world(cc.WorldButtonsPanel, bpy.types.Panel):
     bl_label = "Background(sky)"
